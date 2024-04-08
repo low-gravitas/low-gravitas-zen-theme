@@ -1,0 +1,52 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.lowgravitas.low-gravitas-zen</id>
+    <version>1.0.0</version>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Low Gravitas Zen</name>
+    <category>UI</category>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="support@lowgravitas.com" url="https://lowgravitas.com">Low Gravitas</vendor>
+
+    <idea-version since-build="231" until-build="241.*"/>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    Dark theme with good contrast and reduced use of blue light. Build for New UI, but does work without (panels are a
+    bit ugly). Credits:
+
+    <ul>
+        <li>Color scheme originally based on <a href="https://plugins.jetbrains.com/plugin/17938-zenburn">Zenburn</a>
+            with contrast and background color changes. Has drifted more during development.
+        </li>
+        <li>Theme file based on <a href="https://plugins.jetbrains.com/plugin/12112-solarized-theme">Solarized Dark
+            theme</a>.
+        </li>
+    </ul>
+
+    Built with IntelliJ IDEA 2023.3. Also tested with RubyMine 2023.3. It should work with other IDEs or versions, but
+    this is not guaranteed. In particular, versions prior to 2019.2 may have issues.
+  ]]></description>
+
+    <!-- Short summary of new features and bugfixes in the latest plugin version.
+         Displayed on the Plugin Page and IDE Plugin Manager. Simple HTML elements can be included between <![CDATA[  ]]> tags. -->
+    <change-notes><![CDATA[
+    <ul>
+        <li>1.0.0  Initial release of the theme.</li>
+    </ul>
+  ]]></change-notes>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <themeProvider id="low-gravitas-zen" path="/lowgravitaszen.theme.json"/>
+    </extensions>
+</idea-plugin>
