@@ -2009,9 +2009,10 @@ def check_mode():
                 continue
 
             com_lines = result.stdout.splitlines(keepends=True)
-            # Filter out GENERATED header from generated
+            # Filter out GENERATED header from both sides
             gen_filtered = [l for l in gen_lines if GENERATED_HEADER_HASH not in l]
-            if gen_filtered == com_lines:
+            com_filtered = [l for l in com_lines if GENERATED_HEADER_HASH not in l]
+            if gen_filtered == com_filtered:
                 print(f"  OK: {label}")
             else:
                 errors.append(f"{label} differs (ignoring GENERATED header)")
