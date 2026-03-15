@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="A warm, low-blue-light color theme for editors and terminals. Dark and light variants. WCAG AA contrast.">
+<title>Low Gravitas Zen — Theme Preview</title>
+<link rel="stylesheet" href="low-gravitas-zen.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<nav>
+  <span class="nav-left">Low Gravitas Zen</span>
+  <div class="nav-right">
+    <a href="low-gravitas-zen.css">CSS Tokens</a>
+    <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a>
+    <button id="theme-toggle" aria-label="Toggle light/dark theme">Switch to Light</button>
+  </div>
+</nav>
+<main>
+  <div class="hero">
+    <h1>Low Gravitas Zen</h1>
+    <p class="tagline">A warm, low-blue-light color theme for editors and terminals. Dark and light variants with WCAG AA contrast.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/low-gravitas/low-gravitas-zen-theme">View on GitHub</a>
+      <a class="btn" href="low-gravitas-zen.css">Download CSS Tokens</a>
+    </div>
+  </div>
+
+  <h2>Palette</h2>
+  <div class="swatches fade-in">
+{{swatches}}
+  </div>
+
+  <h2>Editor</h2>
+  <div class="ide fade-in">
+    <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>fibonacci.py &mdash; Low Gravitas Zen</span></div>
+    <div class="ide-body">
+      <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;fibonacci.py</div><div class="file">&nbsp;&nbsp;utils.py</div><div class="file">&nbsp;&nbsp;config.toml</div><div class="dir">tests/</div><div class="file">&nbsp;&nbsp;test_fib.py</div><div class="dir">docs/</div><div class="file">&nbsp;&nbsp;README.md</div></div>
+      <div class="ide-editor">
+        <div class="ide-tabs"><div class="ide-tab active">fibonacci.py</div><div class="ide-tab">utils.py</div></div>
+        <div class="ide-code">{{python_code}}</div>
+      </div>
+    </div>
+    <div class="ide-statusbar"><span>Python 3.14 &bull; UTF-8 &bull; LF</span><span>Ln 12, Col 24</span></div>
+  </div>
+
+  <div class="ide fade-in">
+    <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>api.js &mdash; Low Gravitas Zen</span></div>
+    <div class="ide-body">
+      <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;api.js</div><div class="file">&nbsp;&nbsp;index.js</div><div class="file">&nbsp;&nbsp;types.ts</div><div class="dir">components/</div><div class="file">&nbsp;&nbsp;App.tsx</div></div>
+      <div class="ide-editor">
+        <div class="ide-tabs"><div class="ide-tab active">api.js</div><div class="ide-tab">index.js</div></div>
+        <div class="ide-code">{{js_code}}</div>
+      </div>
+    </div>
+    <div class="ide-statusbar"><span>JavaScript &bull; UTF-8 &bull; LF</span><span>Ln 1, Col 1</span></div>
+  </div>
+
+  <h2>Terminal</h2>
+  <div class="terminal fade-in">
+    <div class="terminal-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>bash &mdash; 80x24</span></div>
+    <div class="terminal-body"><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ git status<br><span style="color:var(--text-dim)">On branch main</span><br><span style="color:var(--lgz-green)">  modified:   src/fibonacci.py</span><br><span style="color:var(--lgz-red)">  deleted:    old_config.yaml</span><br><span style="color:var(--lgz-bright-yellow)">  new file:   <span style="background:var(--selection-bg);color:var(--selection-fg)">README.md</span></span><br><br><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ echo <span style="color:var(--lgz-green)">"Hello, World!"</span><br>Hello, World!</div>
+  </div>
+</main>
+
+<footer>Low Gravitas Zen v{{version}} &mdash; <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a></footer>
+
+<script>
+(function() {
+  const themeBtn = document.getElementById('theme-toggle');
+  function getTheme() { return document.documentElement.getAttribute('data-theme') || 'dark'; }
+  function updateLabel() { themeBtn.textContent = getTheme() === 'dark' ? 'Switch to Light' : 'Switch to Dark'; }
+  themeBtn.addEventListener('click', () => {
+    const next = getTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lgz-theme', next);
+    updateLabel();
+  });
+  const saved = localStorage.getItem('lgz-theme');
+  if (saved) { document.documentElement.setAttribute('data-theme', saved); updateLabel(); }
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 100); fadeObserver.unobserve(entry.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+})();
+</script>
+</body>
+</html>

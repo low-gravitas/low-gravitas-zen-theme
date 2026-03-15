@@ -2078,142 +2078,211 @@ def seed_light():
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Demo site
+# Standalone CSS
 # ══════════════════════════════════════════════════════════════════════════════
 
-def generate_site():
-    """Generate docs/index.html demo site."""
-    import re
-
+def generate_css():
+    """Generate docs/low-gravitas-zen.css — standalone color tokens for web."""
     dark_pal = load_palette("dark")
-    try:
-        light_pal = load_palette("light")
-        has_light = any(
-            light_pal.get(k) != dark_pal.get(k)
-            for k in dark_pal if not k.startswith("_")
-        )
-    except Exception:
-        light_pal = dark_pal
-        has_light = False
+    light_pal = load_palette("light")
+    version = dark_pal["_meta"]["version"]
 
-    def css_vars(pal):
+    with open(PALETTE_PATH, "rb") as f:
+        data = tomllib.load(f)
+    tokens = dict(data.get("tokens", {}))
+    tokens_dark = tokens.pop("dark", {})
+    tokens_light = tokens.pop("light", {})
+
+    def palette_vars(pal, prefix="lgz"):
+        """Emit --lgz-<name>: <hex>; lines for all palette colors."""
         lines = []
         for k, v in pal.items():
             if k.startswith("_") or not isinstance(v, str) or not v.startswith("#"):
                 continue
-            lines.append(f"  --{k.replace('_', '-')}: {v};")
+            css_name = k.replace("_", "-")
+            lines.append(f"  --{prefix}-{css_name}: {v};")
         return "\n".join(lines)
 
-    # ── Token-based colorizer ────────────────────────────────────────────
-    # Tokenizes source into (css_class_or_None, text) spans BEFORE any HTML
-    # escaping, then builds HTML from tokens. This avoids the regex-on-HTML
-    # mangling that caused the foreground color bug.
+    def token_vars(token_map, variant_overrides, prefix="lgz"):
+        """Emit --<semantic>: var(--lgz-<palette_key>); lines."""
+        merged = {**token_map, **variant_overrides}
+        lines = []
+        for token_name, palette_key in merged.items():
+            css_token = token_name.replace("_", "-")
+            css_palette = palette_key.replace("_", "-")
+            lines.append(f"  --{css_token}: var(--{prefix}-{css_palette});")
+        return "\n".join(lines)
 
-    def _tokenize_python(code):
-        """Yield (css_class | None, text) for simple Python highlighting."""
-        PY_KW = {
-            "def", "return", "if", "elif", "else", "for", "in", "import",
-            "from", "class", "try", "except", "as", "with", "async",
-            "await", "not", "and", "or", "is", "True", "False", "None",
-            "while", "yield", "raise", "pass", "break", "continue", "lambda",
-        }
-        PY_BUILTIN = {"print", "range", "len", "int", "list", "str", "bool",
-                       "dict", "set", "tuple", "type", "isinstance", "super",
-                       "enumerate", "zip", "map", "filter", "sorted", "open"}
-        # Simple token regex: order matters — earlier groups win
-        tok_re = re.compile(
-            r'("""[\s\S]*?"""|'           # triple-quote string
-            r"'''[\s\S]*?'''|"            # triple-quote single
-            r'f"[^"]*?"|"[^"]*?"|'        # double-quote string (incl f-string)
-            r"f'[^']*?'|'[^']*?'|"        # single-quote string
-            r'#[^\n]*|'                    # comment
-            r'\b\d+\.?\d*\b|'             # number
-            r'\b[A-Za-z_]\w*\b|'          # identifier
-            r'\S)'                         # single non-space char
-        )
+    dark_vars = palette_vars(dark_pal)
+    light_vars = palette_vars(light_pal)
+    dark_token_vars = token_vars(tokens, tokens_dark)
+    light_token_vars = token_vars(tokens, tokens_light)
+
+    # The accent token is already in the raw palette with that name,
+    # so --accent aliases to --lgz-accent. Same for --error.
+    # We add them explicitly so consumers don't have to know.
+    extra_dark = [
+        "  --accent: var(--lgz-accent);",
+        "  --error: var(--lgz-error);",
+    ]
+    extra_light = [
+        "  --accent: var(--lgz-accent);",
+        "  --error: var(--lgz-error);",
+    ]
+
+    def indent(text, n=2):
+        """Add n extra spaces of indentation to each line."""
+        prefix = " " * n
+        return "\n".join(prefix + line for line in text.split("\n"))
+
+    light_vars_media = indent(light_vars)
+    light_token_vars_media = indent(light_token_vars)
+    extra_light_media = [indent(l) for l in extra_light]
+
+    css = f"""\
+/* Low Gravitas Zen v{version} — CSS Color Tokens
+   GENERATED from palette.toml — do not edit by hand.
+   https://github.com/low-gravitas/low-gravitas-zen-theme
+
+   Usage:
+     <link rel="stylesheet" href="low-gravitas-zen.css">
+
+   Dark mode (default):  just works — :root provides dark palette.
+   Light mode:           add data-theme="light" to <html>, or let
+                         prefers-color-scheme handle it automatically.
+   Manual toggle:        swap data-theme between "dark" and "light".
+
+   Raw palette vars:     --lgz-red, --lgz-bg-deep, --lgz-accent, etc.
+   Semantic aliases:     --bg, --surface, --text, --accent, --danger, etc.
+*/
+
+/* ── Raw palette (dark — default) ────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {{
+{dark_vars}
+}}
+
+/* ── Raw palette (light) ─────────────────────────────────────────────────── */
+
+[data-theme="light"] {{
+{light_vars}
+}}
+
+@media (prefers-color-scheme: light) {{
+  :root:not([data-theme="dark"]) {{
+{light_vars_media}
+  }}
+}}
+
+/* ── Semantic aliases (dark — default) ───────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {{
+{dark_token_vars}
+{chr(10).join(extra_dark)}
+}}
+
+/* ── Semantic aliases (light) ────────────────────────────────────────────── */
+
+[data-theme="light"] {{
+{light_token_vars}
+{chr(10).join(extra_light)}
+}}
+
+@media (prefers-color-scheme: light) {{
+  :root:not([data-theme="dark"]) {{
+{light_token_vars_media}
+{chr(10).join(extra_light_media)}
+  }}
+}}
+
+/* ── Selection ───────────────────────────────────────────────────────────── */
+
+::selection {{
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}}
+"""
+
+    docs_dir = REPO / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    path = docs_dir / "low-gravitas-zen.css"
+    path.write_text(css)
+    print(f"  wrote {path.relative_to(REPO)}")
+    return path
+# ══════════════════════════════════════════════════════════════════════════════
+# Demo site
+# ══════════════════════════════════════════════════════════════════════════════
+
+def generate_site():
+    """Generate docs/index.html from site/ templates + colorized code samples."""
+    import re as _re
+    import shutil
+
+    dark_pal = load_palette("dark")
+    try:
+        light_pal = load_palette("light")
+    except Exception:
+        light_pal = dark_pal
+
+    version = dark_pal["_meta"]["version"]
+
+    # ── Token-based colorizer ────────────────────────────────────────────
+
+    _TOK_PATTERN = _re.compile(
+        r'("""[\s\S]*?"""|'
+        r"'''[\s\S]*?'''|"
+        r'f"[^"]*?"|"[^"]*?"|'
+        r"f'[^']*?'|'[^']*?'|"
+        r'`[^`]*?`|'
+        r'//[^\n]*|/\*[\s\S]*?\*/|'
+        r'#[^\n]*|'
+        r'\b\d+\.?\d*\b|'
+        r'\b[A-Za-z_$]\w*\b|'
+        r'=>|'
+        r'\S)'
+    )
+
+    def _tokenize(code, keywords, builtins=None, track_def=False):
+        builtins = builtins or set()
         prev_was_def = False
-        for m in tok_re.finditer(code):
+        for m in _TOK_PATTERN.finditer(code):
             t = m.group()
-            if t.startswith(('#',)):
+            if t.startswith(("#",)):
                 yield ("tk-comment", t)
-            elif t.startswith(('"""', "'''", '"', "'", 'f"', "f'")):
+            elif t.startswith(("//",)):
+                yield ("tk-comment", t)
+            elif t.startswith(("/*",)):
+                yield ("tk-comment", t)
+            elif t.startswith(('"""', "'''", '"', "'", 'f"', "f'", "`")):
                 yield ("tk-string", t)
-            elif re.fullmatch(r'\d+\.?\d*', t):
+            elif _re.fullmatch(r'\d+\.?\d*', t):
                 yield ("tk-number", t)
-            elif t in PY_KW:
+            elif t in keywords:
                 yield ("tk-keyword", t)
-                prev_was_def = t == "def"
+                prev_was_def = track_def and t == "def"
                 continue
             elif prev_was_def:
                 yield ("tk-function", t)
-            elif t in PY_BUILTIN:
+            elif t in builtins:
                 yield ("tk-type", t)
             else:
                 yield (None, t)
             prev_was_def = False
-            # Emit inter-token whitespace / chars not captured
-            # (handled below by scanning gaps)
 
-    def _tokenize_js(code):
-        """Yield (css_class | None, text) for simple JS highlighting."""
-        JS_KW = {
-            "const", "let", "var", "function", "async", "await", "try",
-            "catch", "throw", "return", "if", "else", "new", "typeof",
-            "null", "undefined", "true", "false", "this", "class",
-            "import", "export", "from", "of", "in", "for", "while",
-            "switch", "case", "break", "default", "do", "yield",
-        }
-        tok_re = re.compile(
-            r'(`[^`]*?`|'                  # template literal
-            r'"[^"]*?"|'                    # double-quote string
-            r"'[^']*?'|"                    # single-quote string
-            r'//[^\n]*|'                    # line comment
-            r'/\*[\s\S]*?\*/|'             # block comment
-            r'\b\d+\.?\d*\b|'             # number
-            r'\b[A-Za-z_$]\w*\b|'         # identifier
-            r'=>|'                          # arrow
-            r'\S)'                          # single non-space char
-        )
-        for m in tok_re.finditer(code):
-            t = m.group()
-            if t.startswith(('//',)):
-                yield ("tk-comment", t)
-            elif t.startswith(('/*',)):
-                yield ("tk-comment", t)
-            elif t.startswith(('`', '"', "'")):
-                yield ("tk-string", t)
-            elif re.fullmatch(r'\d+\.?\d*', t):
-                yield ("tk-number", t)
-            elif t in JS_KW:
-                yield ("tk-keyword", t)
-            else:
-                yield (None, t)
+    def _esc(s):
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-    def _tokens_to_html(code, tokenizer):
-        """Run tokenizer, fill gaps with plain text, HTML-escape everything."""
-        tokens = list(tokenizer(code))
-        # Build a position-aware list of (start, end, class, text)
-        tok_re_generic = re.compile(
-            r'("""[\s\S]*?"""|'
-            r"'''[\s\S]*?'''|"
-            r'f"[^"]*?"|"[^"]*?"|'
-            r"f'[^']*?'|'[^']*?'|"
-            r'`[^`]*?`|'
-            r'//[^\n]*|/\*[\s\S]*?\*/|'
-            r'#[^\n]*|'
-            r'\b\d+\.?\d*\b|'
-            r'\b[A-Za-z_$]\w*\b|'
-            r'=>|'
-            r'\S)'
-        )
+    def _tokens_to_html(code, tokenizer_args):
+        keywords, builtins, track_def = tokenizer_args
+        tokens = list(_tokenize(code, keywords, builtins, track_def))
         parts = []
         pos = 0
         tok_iter = iter(tokens)
-        for m in tok_re_generic.finditer(code):
-            # Emit gap before this match
+        for m in _TOK_PATTERN.finditer(code):
             if m.start() > pos:
-                gap = code[pos:m.start()]
-                parts.append(_esc(gap))
+                parts.append(_esc(code[pos:m.start()]))
             try:
                 cls, text = next(tok_iter)
             except StopIteration:
@@ -2226,50 +2295,42 @@ def generate_site():
             else:
                 parts.append(escaped)
             pos = m.end()
-        # Trailing text
         if pos < len(code):
             parts.append(_esc(code[pos:]))
         return "".join(parts)
 
-    def _esc(s):
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    PY_KW = {"def","return","if","elif","else","for","in","import","from","class",
+             "try","except","as","with","async","await","not","and","or","is",
+             "True","False","None","while","yield","raise","pass","break","continue","lambda"}
+    PY_BUILTIN = {"print","range","len","int","list","str","bool","dict","set","tuple",
+                   "type","isinstance","super","enumerate","zip","map","filter","sorted","open"}
+    JS_KW = {"const","let","var","function","async","await","try","catch","throw","return",
+             "if","else","new","typeof","null","undefined","true","false","this","class",
+             "import","export","from","of","in","for","while","switch","case","break","default","do","yield"}
 
     def colorize_python(code):
-        return _tokens_to_html(code, _tokenize_python)
+        return _tokens_to_html(code, (PY_KW, PY_BUILTIN, True))
 
     def colorize_js(code):
-        return _tokens_to_html(code, _tokenize_js)
+        return _tokens_to_html(code, (JS_KW, set(), False))
 
-    def _add_line_numbers(html_code, cursor_line=None, selection=None):
-        """Wrap each line with a line-number span for IDE display.
-        cursor_line: 1-based line number to show a blinking cursor
-        selection: dict with 'line' (1-based), 'start', 'end' char positions
-                   to highlight with selection background
-        """
+    def _add_line_numbers(html_code):
         lines = html_code.split("\n")
-        numbered = []
-        for i, line in enumerate(lines, 1):
-            cls = ' class="cursor-line"' if i == cursor_line else ""
-            content = line
-            if i == cursor_line:
-                content += '<span class="cursor-bar"></span>'
-            numbered.append(f'<span{cls}><span class="line-num">{i}</span>{content}</span>')
-        return "\n".join(numbered)
+        return "\n".join(
+            f'<span><span class="line-num">{i:>2}</span>{line}</span>'
+            for i, line in enumerate(lines, 1)
+        )
 
     def _add_selection_and_cursor(html_code):
-        """Add line numbers, a cursor on line 12, and selection on line 6."""
         lines = html_code.split("\n")
         result = []
         for i, line in enumerate(lines, 1):
             cls = ""
             content = line
             if i == 12:
-                # Cursor line: highlight background, add blinking cursor at end
                 cls = ' class="cursor-line"'
                 content += '<span class="cursor-bar"></span>'
             if i == 6:
-                # Show selection on "range(2, n)" — works on tokenized HTML
-                # The tokenizer produces: <span class="tk-type">range</span>(<span class="tk-number">2</span>, n)
                 content = content.replace(
                     '<span class="tk-type">range</span>(<span class="tk-number">2</span>, n)',
                     '<span class="selected-text"><span class="tk-type">range</span>(<span class="tk-number">2</span>, n)</span>'
@@ -2277,487 +2338,93 @@ def generate_site():
             result.append(f'<span{cls}><span class="line-num">{i:>2}</span>{content}</span>')
         return "\n".join(result)
 
-    # ── WCAG contrast helpers ────────────────────────────────────────────
-
-    def _relative_luminance(hex_color):
-        r, g, b = hex_to_rgb(hex_color)
-        def lin(c):
-            return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
-
-    def _contrast_ratio(hex1, hex2):
-        l1 = _relative_luminance(hex1)
-        l2 = _relative_luminance(hex2)
-        lighter = max(l1, l2)
-        darker = min(l1, l2)
-        return (lighter + 0.05) / (darker + 0.05)
-
     def _label_color_for_swatch(swatch_hex):
-        """Pick white or black label text for best contrast on swatch."""
-        cr_white = _contrast_ratio(swatch_hex, "#ffffff")
-        cr_black = _contrast_ratio(swatch_hex, "#000000")
+        r, g, b = hex_to_rgb(swatch_hex)
+        def lin(c): return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+        lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+        cr_white = 1.05 / (lum + 0.05)
+        cr_black = (lum + 0.05) / 0.05
         return "#ffffff" if cr_white > cr_black else "#000000"
 
     # ── Code samples ─────────────────────────────────────────────────────
 
-    python_sample = '''\
-def fibonacci(n: int) -> list[int]:
-    """Generate Fibonacci sequence up to n terms."""
-    if n <= 0:
-        return []
-    sequence = [0, 1]
-    for i in range(2, n):
-        sequence.append(sequence[-1] + sequence[-2])
-    return sequence[:n]
+    python_sample = (
+        'def fibonacci(n: int) -> list[int]:\n'
+        '    """Generate Fibonacci sequence up to n terms."""\n'
+        '    if n <= 0:\n'
+        '        return []\n'
+        '    sequence = [0, 1]\n'
+        '    for i in range(2, n):\n'
+        '        sequence.append(sequence[-1] + sequence[-2])\n'
+        '    return sequence[:n]\n'
+        '\n'
+        '# Print the first 10 Fibonacci numbers\n'
+        'result = fibonacci(10)\n'
+        'print(f"Fibonacci: {result}")'
+    )
 
-# Print the first 10 Fibonacci numbers
-result = fibonacci(10)
-print(f"Fibonacci: {result}")'''
+    js_sample = (
+        'const fetchUserData = async (userId) => {\n'
+        '  try {\n'
+        '    const response = await fetch(`/api/users/${userId}`);\n'
+        '    if (!response.ok) {\n'
+        '      throw new Error(`HTTP ${response.status}`);\n'
+        '    }\n'
+        '    const { name, email, role } = await response.json();\n'
+        '    return { name, email, role, active: true };\n'
+        '  } catch (error) {\n'
+        '    console.error("Failed to fetch user:", error);\n'
+        '    return null;\n'
+        '  }\n'
+        '};'
+    )
 
-    js_sample = '''\
-const fetchUserData = async (userId) => {
-  try {
-    const response = await fetch(`/api/users/${userId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-    const { name, email, role } = await response.json();
-    return { name, email, role, active: true };
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    return null;
-  }
-};'''
+    # ── Generate swatches ────────────────────────────────────────────────
 
-    dark_vars = css_vars(dark_pal)
-    light_vars = css_vars(light_pal) if has_light else css_vars(dark_pal)
-
-    # ── Swatch grid ──────────────────────────────────────────────────────
-    # For each swatch, compute the best-contrast label color for BOTH
-    # dark and light variants and store as inline CSS custom properties.
-
-    all_swatch_names = [
+    swatch_names = [
         "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
         "bright-black", "bright-red", "bright-green", "bright-yellow",
         "bright-blue", "bright-magenta", "bright-cyan", "bright-white",
         "bg-deep", "bg-mid", "bg-raised", "selection", "cursor", "accent",
     ]
-
-    swatch_html = ""
-    for name in all_swatch_names:
+    swatch_lines = []
+    for name in swatch_names:
         pal_key = name.replace("-", "_")
         dark_hex = dark_pal.get(pal_key, "#888888")
         light_hex = light_pal.get(pal_key, dark_hex)
         dark_label = _label_color_for_swatch(dark_hex)
         light_label = _label_color_for_swatch(light_hex)
-        swatch_html += (
-            f'<div class="swatch" style="background: var(--{name}); '
+        swatch_lines.append(
+            f'<div class="swatch" style="background: var(--lgz-{name}); '
             f'--label-dark: {dark_label}; --label-light: {light_label};" '
             f'data-dark="{dark_hex}" data-light="{light_hex}">'
-            f'<span>{name}</span></div>\n'
+            f'<span>{name}</span></div>'
         )
 
-    html = f"""\
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark light">
-<title>Low Gravitas Zen — Theme Preview</title>
-<meta name="description" content="A warm, low-blue-light color theme for editors and terminals. Dark and light variants.">
-<style>
-[data-theme="dark"] {{
-{dark_vars}
-}}
-[data-theme="light"] {{
-{light_vars}
-}}
-* {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg-raised);
-  color: var(--white);
-  transition: background 0.3s, color 0.3s;
-}}
-.container {{
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem;
-}}
-header {{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--cursor);
-}}
-h1 {{ font-size: 1.5rem; font-weight: 600; }}
-h2 {{ font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--yellow); }}
-.toggle {{
-  background: var(--bg-mid);
-  color: var(--bright-white);
-  border: 1px solid var(--cursor);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-}}
-.toggle:hover {{ background: var(--selection); }}
-.toggle:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+    # ── Assemble from templates ──────────────────────────────────────────
 
-/* ── Swatches ── */
-.swatches {{
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
-  margin-bottom: 1.5rem;
-}}
-.swatch {{
-  aspect-ratio: 1;
-  border-radius: 4px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 4px;
-  min-height: 60px;
-  border: 1px solid var(--cursor);
-}}
-.swatch span {{
-  font-size: 0.6rem;
-  text-align: center;
-  word-break: break-all;
-}}
-[data-theme="dark"] .swatch span {{ color: var(--label-dark); }}
-[data-theme="light"] .swatch span {{ color: var(--label-light); }}
-.swatch::after {{
-  content: attr(data-dark);
-  font-size: 0.55rem;
-  font-family: "SF Mono", monospace;
-  opacity: 0;
-  transition: opacity 0.15s;
-  position: absolute;
-  top: 4px;
-  left: 0;
-  right: 0;
-  text-align: center;
-}}
-[data-theme="light"] .swatch::after {{ content: attr(data-light); }}
-[data-theme="dark"] .swatch::after {{ color: var(--label-dark); }}
-[data-theme="light"] .swatch::after {{ color: var(--label-light); }}
-.swatch {{ position: relative; }}
-.swatch:hover::after {{ opacity: 1; }}
+    python_html = _add_selection_and_cursor(colorize_python(python_sample))
+    js_html = _add_line_numbers(colorize_js(js_sample))
 
-/* ── IDE mockup frame ── */
-.ide {{
-  border: 1px solid var(--cursor);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-}}
-.ide-titlebar {{
-  background: var(--bg-raised);
-  padding: 6px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: var(--white);
-  border-bottom: 1px solid var(--cursor);
-}}
-.ide-dots {{
-  display: flex;
-  gap: 5px;
-}}
-.ide-dots span {{
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}}
-.ide-body {{
-  display: flex;
-  min-height: 280px;
-}}
-.ide-sidebar {{
-  background: var(--bg-mid);
-  width: 170px;
-  flex-shrink: 0;
-  padding: 8px 0;
-  font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
-  font-size: 0.75rem;
-  line-height: 1.8;
-  border-right: 1px solid var(--cursor);
-  color: var(--white);
-}}
-.ide-sidebar .file {{
-  padding: 0 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}}
-.ide-sidebar .file.active {{
-  background: var(--bg-deep);
-  color: var(--bright-white);
-}}
-.ide-sidebar .dir {{
-  padding: 0 12px;
-  color: var(--yellow);
-}}
-.ide-editor {{
-  background: var(--bg-deep);
-  color: var(--white);
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}}
-.ide-tabs {{
-  background: var(--bg-mid);
-  display: flex;
-  font-size: 0.75rem;
-  border-bottom: 1px solid var(--cursor);
-}}
-.ide-tab {{
-  padding: 5px 14px;
-  color: var(--bright-black);
-  border-right: 1px solid var(--cursor);
-}}
-.ide-tab.active {{
-  background: var(--bg-deep);
-  color: var(--bright-white);
-  border-bottom: 3px solid var(--accent);
-}}
-.ide-code {{
-  flex: 1;
-  padding: 8px 12px;
-  overflow-x: auto;
-  font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
-  font-size: 0.8rem;
-  line-height: 1.55;
-  white-space: pre;
-}}
-.ide-code .line-num {{
-  display: inline-block;
-  width: 2.5em;
-  text-align: right;
-  padding-right: 1em;
-  color: var(--bright-black);
-  user-select: none;
-}}
-.ide-statusbar {{
-  background: var(--bg-raised);
-  padding: 3px 12px;
-  font-size: 0.7rem;
-  color: var(--white);
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid var(--cursor);
-}}
-
-/* ── Standalone code/terminal blocks (kept for simplicity) ── */
-.tk-keyword {{ color: var(--bright-red); }}
-.tk-string {{ color: var(--green); }}
-.tk-comment {{ color: var(--blue); font-style: italic; }}
-.tk-number {{ color: var(--bright-yellow); }}
-.tk-function {{ color: var(--bright-blue); }}
-.tk-type {{ color: var(--yellow); }}
-.tk-variable {{ color: var(--bright-magenta); }}
-
-.terminal {{
-  background: var(--bg-deep);
-  color: var(--white);
-  border: 1px solid var(--cursor);
-  border-radius: 8px;
-  overflow: hidden;
-}}
-.terminal-titlebar {{
-  background: var(--bg-raised);
-  padding: 6px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: var(--white);
-  border-bottom: 1px solid var(--cursor);
-}}
-.terminal-body {{
-  padding: 10px 14px;
-  font-family: "SF Mono", "Fira Code", monospace;
-  font-size: 0.8rem;
-  line-height: 1.6;
-}}
-
-::selection {{
-  background: var(--selection);
-  color: var(--bright-white);
-}}
-.selected-text {{
-  background: var(--selection);
-  border-radius: 2px;
-}}
-.cursor-line {{
-  background: var(--bg-mid);
-  position: relative;
-}}
-.cursor-bar {{
-  display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  background: var(--cursor);
-  vertical-align: text-bottom;
-  animation: blink 1s step-end infinite;
-}}
-@keyframes blink {{
-  50% {{ opacity: 0; }}
-}}
-footer {{
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--cursor);
-  font-size: 0.8rem;
-  color: var(--white);
-}}
-footer a {{ color: var(--blue); }}
-</style>
-</head>
-<body>
-<div class="container">
-<header>
-  <div><h1>Low Gravitas Zen</h1><div style="font-size: 0.85rem; color: var(--bright-black); margin-top: 2px;">A warm, low-blue-light color theme for editors and terminals. WCAG AA contrast.</div></div>
-  <button class="toggle" id="theme-toggle" onclick="toggleTheme()">Switch to Light</button>
-</header>
-
-<h2>Palette</h2>
-<div class="swatches">
-{swatch_html}
-</div>
-
-<h2>Editor</h2>
-<div class="ide">
-  <div class="ide-titlebar">
-    <div class="ide-dots">
-      <span style="background: var(--red);"></span>
-      <span style="background: var(--yellow);"></span>
-      <span style="background: var(--green);"></span>
-    </div>
-    <span>fibonacci.py &mdash; Low Gravitas Zen</span>
-  </div>
-  <div class="ide-body">
-    <div class="ide-sidebar">
-      <div class="dir">src/</div>
-      <div class="file active">&nbsp;&nbsp;fibonacci.py</div>
-      <div class="file">&nbsp;&nbsp;utils.py</div>
-      <div class="file">&nbsp;&nbsp;config.toml</div>
-      <div class="dir">tests/</div>
-      <div class="file">&nbsp;&nbsp;test_fib.py</div>
-      <div class="dir">docs/</div>
-      <div class="file">&nbsp;&nbsp;README.md</div>
-    </div>
-    <div class="ide-editor">
-      <div class="ide-tabs">
-        <div class="ide-tab active">fibonacci.py</div>
-        <div class="ide-tab">utils.py</div>
-      </div>
-      <div class="ide-code">{_add_selection_and_cursor(colorize_python(python_sample))}</div>
-    </div>
-  </div>
-  <div class="ide-statusbar">
-    <span>Python 3.14 &bull; UTF-8 &bull; LF</span>
-    <span>Ln 1, Col 1</span>
-  </div>
-</div>
-
-<div class="ide">
-  <div class="ide-titlebar">
-    <div class="ide-dots">
-      <span style="background: var(--red);"></span>
-      <span style="background: var(--yellow);"></span>
-      <span style="background: var(--green);"></span>
-    </div>
-    <span>api.js &mdash; Low Gravitas Zen</span>
-  </div>
-  <div class="ide-body">
-    <div class="ide-sidebar">
-      <div class="dir">src/</div>
-      <div class="file active">&nbsp;&nbsp;api.js</div>
-      <div class="file">&nbsp;&nbsp;index.js</div>
-      <div class="file">&nbsp;&nbsp;types.ts</div>
-      <div class="dir">components/</div>
-      <div class="file">&nbsp;&nbsp;App.tsx</div>
-    </div>
-    <div class="ide-editor">
-      <div class="ide-tabs">
-        <div class="ide-tab active">api.js</div>
-        <div class="ide-tab">index.js</div>
-      </div>
-      <div class="ide-code">{_add_line_numbers(colorize_js(js_sample))}</div>
-    </div>
-  </div>
-  <div class="ide-statusbar">
-    <span>JavaScript &bull; UTF-8 &bull; LF</span>
-    <span>Ln 1, Col 1</span>
-  </div>
-</div>
-
-<h2>Terminal</h2>
-<div class="terminal">
-  <div class="terminal-titlebar">
-    <div class="ide-dots">
-      <span style="background: var(--red);"></span>
-      <span style="background: var(--yellow);"></span>
-      <span style="background: var(--green);"></span>
-    </div>
-    <span>bash &mdash; 80x24</span>
-  </div>
-  <div class="terminal-body">
-    <span style="color: var(--green);">user@host</span>:<span style="color: var(--bright-blue);">~/project</span>$ git status<br>
-    <span style="color: var(--bright-black);">On branch main</span><br>
-    <span style="color: var(--green);">  modified:   src/fibonacci.py</span><br>
-    <span style="color: var(--red);">  deleted:    old_config.yaml</span><br>
-    <span style="color: var(--bright-yellow);">  new file:   <span style="background: var(--terminal-selection-bg); color: var(--terminal-selection-fg);">README.md</span></span><br>
-    <br>
-    <span style="color: var(--green);">user@host</span>:<span style="color: var(--bright-blue);">~/project</span>$ echo <span style="color: var(--green);">"Hello, World!"</span><br>
-    Hello, World!
-  </div>
-</div>
-
-<footer>
-  Low Gravitas Zen v{dark_pal['_meta']['version']} &mdash;
-  <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a>
-</footer>
-</div>
-
-<script>
-function toggleTheme() {{
-  const el = document.documentElement;
-  const current = el.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  el.setAttribute('data-theme', next);
-  localStorage.setItem('lgz-theme', next);
-  updateToggleLabel(next);
-}}
-function updateToggleLabel(theme) {{
-  document.getElementById('theme-toggle').textContent =
-    theme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
-}}
-const saved = localStorage.getItem('lgz-theme');
-if (saved) {{
-  document.documentElement.setAttribute('data-theme', saved);
-  updateToggleLabel(saved);
-}}
-</script>
-</body>
-</html>
-"""
+    template = (REPO / "site" / "site.html").read_text()
+    html = (template
+        .replace("{{swatches}}", "\n".join(swatch_lines))
+        .replace("{{python_code}}", python_html)
+        .replace("{{js_code}}", js_html)
+        .replace("{{version}}", version)
+    )
 
     docs_dir = REPO / "docs"
     docs_dir.mkdir(exist_ok=True)
-    path = docs_dir / "index.html"
-    path.write_text(html)
-    print(f"  wrote {path.relative_to(REPO)}")
-    return path
+    (docs_dir / "index.html").write_text(html)
+    print(f"  wrote docs/index.html")
+
+    shutil.copy2(REPO / "site" / "site.css", docs_dir / "site.css")
+    print(f"  wrote docs/site.css")
+
+    return docs_dir / "index.html"
+
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2803,6 +2470,7 @@ def main():
 
     if args.site:
         generate_site()
+        generate_css()
         return 0
 
     variants = ["dark", "light"] if args.variant == "all" else [args.variant]
