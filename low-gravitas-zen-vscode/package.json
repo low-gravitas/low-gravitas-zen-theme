@@ -2,7 +2,7 @@
     "name": "low-gravitas-zen",
     "displayName": "Low Gravitas Zen",
     "description": "A VS Code theme loosely based on Zenburn with customizations for good visibility and low on blue light for large areas.",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "publisher": "mikeabney",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
@@ -12,6 +12,7 @@
     "keywords": [
         "Theme",
         "Dark Theme",
+        "Light Theme",
         "Low Gravitas",
         "Zenburn",
         "Accessible Theme"
@@ -36,6 +37,11 @@
                 "label": "Low Gravitas Zen",
                 "uiTheme": "vs-dark",
                 "path": "./themes/Low Gravitas Zen-color-theme.json"
+            },
+            {
+                "label": "Low Gravitas Zen Light",
+                "uiTheme": "vs",
+                "path": "./themes/Low Gravitas Zen Light-color-theme.json"
             }
         ]
     }

@@ -2,7 +2,7 @@
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>com.lowgravitas.low-gravitas-zen</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
@@ -18,8 +18,8 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Dark theme with good contrast and reduced use of blue light. Build for New UI, but does work without (panels are a
-    bit ugly). Credits:
+    Dark and light themes with good contrast and reduced use of blue light. Built for New UI, but does work without (panels are a
+    bit ugly). Includes both dark and light variants. Credits:
 
     <ul>
         <li>Color scheme originally based on <a href="https://plugins.jetbrains.com/plugin/17938-zenburn">Zenburn</a>
@@ -38,6 +38,7 @@
          Displayed on the Plugin Page and IDE Plugin Manager. Simple HTML elements can be included between <![CDATA[  ]]> tags. -->
     <change-notes><![CDATA[
     <ul>
+        <li>1.2.0  Add light mode variant. All themes now generated from palette.toml.</li>
         <li>1.1.0  Update version compatibility through 2025.3. Add Islands theme support. Sync console colors with unified palette.</li>
         <li>1.0.1  Update version compatibility.</li>
         <li>1.0.0  Initial release of the theme.</li>
@@ -50,5 +51,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <themeProvider id="low-gravitas-zen" path="/lowgravitaszen.theme.json"/>
+        <themeProvider id="low-gravitas-zen-light" path="/lowgravitaszenlight.theme.json"/>
     </extensions>
 </idea-plugin>

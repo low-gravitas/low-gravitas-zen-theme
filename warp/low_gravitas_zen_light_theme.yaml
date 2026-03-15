@@ -1,0 +1,25 @@
+# Low Gravitas Zen light v1.2.0
+# GENERATED — edit palette.toml, then run: python3 generate.py
+accent: "#c84820"
+background: "#f5f0e6"
+foreground: "#45453c"
+details: "lighter"
+terminal_colors:
+  normal:
+    black: "#474747"
+    red: "#a83e3c"
+    green: "#1a6b4d"
+    yellow: "#6a5510"
+    blue: "#2e5a80"
+    magenta: "#7d3e69"
+    cyan: "#005f62"
+    white: "#45453c"
+  bright:
+    black: "#466656"
+    red: "#c03030"
+    green: "#008050"
+    yellow: "#7d6b00"
+    blue: "#1670aa"
+    magenta: "#a8408a"
+    cyan: "#009095"
+    white: "#2a2a28"

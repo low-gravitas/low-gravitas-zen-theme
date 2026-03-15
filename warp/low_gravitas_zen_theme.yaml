@@ -1,4 +1,5 @@
-# Low Gravitas Zen v1.1.0
+# Low Gravitas Zen v1.2.0
+# GENERATED — edit palette.toml, then run: python3 generate.py
 accent: "#ffff86"
 background: "#100c00"
 foreground: "#e2e2d5"
@@ -9,7 +10,7 @@ terminal_colors:
     red: "#c9615e"
     green: "#70be9b"
     yellow: "#e2d072"
-    blue: "#4b759d"
+    blue: "#5580aa"
     magenta: "#d38dbb"
     cyan: "#7bd8db"
     white: "#e2e2d5"

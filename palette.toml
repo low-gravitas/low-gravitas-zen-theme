@@ -1,0 +1,83 @@
+# Low Gravitas Zen — palette source of truth
+# Edit this file, then run: python3 generate.py
+
+[meta]
+name = "Low Gravitas Zen"
+version = "1.2.0"
+
+# ── 16 ANSI colors ──────────────────────────────────────────────────────────
+[base]
+black          = "#5f5f5f"
+red            = "#c9615e"
+green          = "#70be9b"
+yellow         = "#e2d072"
+blue           = "#5580aa"
+magenta        = "#d38dbb"
+cyan           = "#7bd8db"
+white          = "#e2e2d5"
+bright_black   = "#82a092"
+bright_red     = "#ec8e8c"
+bright_green   = "#a9f9d5"
+bright_yellow  = "#e6d7ae"
+bright_blue    = "#a3cbf5"
+bright_magenta = "#fbbee8"
+bright_cyan    = "#a1e5e8"
+bright_white   = "#fffefe"
+
+# ── UI surface colors ───────────────────────────────────────────────────────
+bg_deep   = "#100c00"
+bg_mid    = "#20190c"
+bg_raised = "#302318"
+selection = "#40463c"
+cursor    = "#86766d"
+accent    = "#ffff86"
+
+# ── Terminal-specific ────────────────────────────────────────────────────────
+terminal_selection_bg = "#2b413e"
+terminal_selection_fg = "#cddd8c"
+
+# ── Extended palette (used in token colors, not part of ANSI 16) ─────────
+error      = "#f44747"
+pure_white = "#ffffff"
+
+# ── Variants ─────────────────────────────────────────────────────────────────
+[variants.dark]
+# empty — uses base as-is
+
+[variants.light]
+# Hand-tuned from --seed-light output
+
+# UI surfaces: warm cream/parchment tones
+bg_deep   = "#f5f0e6"
+bg_mid    = "#e8e0d4"
+bg_raised = "#dbd0c2"
+selection = "#c8cec0"
+cursor    = "#8a7e74"
+accent    = "#c84820"
+
+# ANSI colors: darkened to contrast against light backgrounds
+black          = "#474747"
+red            = "#a83e3c"
+green          = "#1a6b4d"
+yellow         = "#6a5510"
+blue           = "#2e5a80"
+magenta        = "#7d3e69"
+cyan           = "#005f62"
+white          = "#45453c"
+bright_black   = "#466656"
+# Bright variants: more saturated to distinguish from regular
+bright_red     = "#c03030"
+bright_green   = "#008050"
+bright_yellow  = "#7d6b00"
+bright_blue    = "#1670aa"
+bright_magenta = "#a8408a"
+bright_cyan    = "#009095"
+bright_white   = "#2a2a28"
+
+# Terminal selection
+terminal_selection_bg = "#b8cac6"
+terminal_selection_fg = "#3a4228"
+
+# Extended
+error      = "#cc2020"
+pure_white = "#000000"

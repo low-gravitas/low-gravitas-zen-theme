@@ -1,0 +1,26 @@
+# Low Gravitas Zen Light v1.2.0
+# GENERATED — edit palette.toml, then run: python3 generate.py
+# Warm cream background, desaturated tones, low blue
+
+palette = 0=#474747
+palette = 1=#a83e3c
+palette = 2=#1a6b4d
+palette = 3=#6a5510
+palette = 4=#2e5a80
+palette = 5=#7d3e69
+palette = 6=#005f62
+palette = 7=#45453c
+palette = 8=#466656
+palette = 9=#c03030
+palette = 10=#008050
+palette = 11=#7d6b00
+palette = 12=#1670aa
+palette = 13=#a8408a
+palette = 14=#009095
+palette = 15=#2a2a28
+background = #f5f0e6
+foreground = #45453c
+cursor-color = #8a7e74
+cursor-text = #000000
+selection-background = #b8cac6
+selection-foreground = #3a4228

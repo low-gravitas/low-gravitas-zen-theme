@@ -5,6 +5,23 @@ All notable changes to the Low Gravitas Zen theme collection will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-14
+
+### Added
+
+- Light mode variants for all themes (VS Code, IntelliJ, Ghostty, Warp, iTerm2)
+- `palette.toml` as single source of truth for all colors
+- `generate.py` to generate all theme files from the palette
+- Demo site at `docs/index.html` with palette swatches and code samples
+- GitHub Actions workflow for Pages deployment
+- `--check` mode to verify generated files match committed versions
+- `--seed-light` utility for computing light palette candidates via LCH inversion
+
+### Changed
+
+- All theme files are now generated from `palette.toml` instead of hand-edited
+- IntelliJ release JAR now includes light theme files
+
 ## [1.1.0] - 2026-03-14
 
 ### Added

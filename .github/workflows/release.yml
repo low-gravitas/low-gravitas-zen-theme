@@ -17,7 +17,7 @@ jobs:
       - name: Build IntelliJ plugin JAR
         run: |
           cd intellij/resources
-          jar cf ../../low-gravitas-zen.jar META-INF/ lowgravitaszen.theme.json low_gravitas_zen.xml
+          jar cf ../../low-gravitas-zen.jar META-INF/ lowgravitaszen.theme.json low_gravitas_zen.xml lowgravitaszenlight.theme.json low_gravitas_zen_light.xml
           cd ../..
           echo "Built low-gravitas-zen.jar"
           jar tf low-gravitas-zen.jar

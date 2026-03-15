@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<title>Low Gravitas Zen — Theme Preview</title>
+<meta name="description" content="A warm, low-blue-light color theme for editors and terminals. Dark and light variants.">
+<style>
+[data-theme="dark"] {
+  --black: #5f5f5f;
+  --red: #c9615e;
+  --green: #70be9b;
+  --yellow: #e2d072;
+  --blue: #5580aa;
+  --magenta: #d38dbb;
+  --cyan: #7bd8db;
+  --white: #e2e2d5;
+  --bright-black: #82a092;
+  --bright-red: #ec8e8c;
+  --bright-green: #a9f9d5;
+  --bright-yellow: #e6d7ae;
+  --bright-blue: #a3cbf5;
+  --bright-magenta: #fbbee8;
+  --bright-cyan: #a1e5e8;
+  --bright-white: #fffefe;
+  --bg-deep: #100c00;
+  --bg-mid: #20190c;
+  --bg-raised: #302318;
+  --selection: #40463c;
+  --cursor: #86766d;
+  --accent: #ffff86;
+  --terminal-selection-bg: #2b413e;
+  --terminal-selection-fg: #cddd8c;
+  --error: #f44747;
+  --pure-white: #ffffff;
+}
+[data-theme="light"] {
+  --black: #474747;
+  --red: #a83e3c;
+  --green: #1a6b4d;
+  --yellow: #6a5510;
+  --blue: #2e5a80;
+  --magenta: #7d3e69;
+  --cyan: #005f62;
+  --white: #45453c;
+  --bright-black: #466656;
+  --bright-red: #c03030;
+  --bright-green: #008050;
+  --bright-yellow: #7d6b00;
+  --bright-blue: #1670aa;
+  --bright-magenta: #a8408a;
+  --bright-cyan: #009095;
+  --bright-white: #2a2a28;
+  --bg-deep: #f5f0e6;
+  --bg-mid: #e8e0d4;
+  --bg-raised: #dbd0c2;
+  --selection: #c8cec0;
+  --cursor: #8a7e74;
+  --accent: #c84820;
+  --terminal-selection-bg: #b8cac6;
+  --terminal-selection-fg: #3a4228;
+  --error: #cc2020;
+  --pure-white: #000000;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-raised);
+  color: var(--white);
+  transition: background 0.3s, color 0.3s;
+}
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cursor);
+}
+h1 { font-size: 1.5rem; font-weight: 600; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--yellow); }
+.toggle {
+  background: var(--bg-mid);
+  color: var(--bright-white);
+  border: 1px solid var(--cursor);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.toggle:hover { background: var(--selection); }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Swatches ── */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-bottom: 1.5rem;
+}
+.swatch {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
+  min-height: 60px;
+  border: 1px solid var(--cursor);
+}
+.swatch span {
+  font-size: 0.6rem;
+  text-align: center;
+  word-break: break-all;
+}
+[data-theme="dark"] .swatch span { color: var(--label-dark); }
+[data-theme="light"] .swatch span { color: var(--label-light); }
+.swatch::after {
+  content: attr(data-dark);
+  font-size: 0.55rem;
+  font-family: "SF Mono", monospace;
+  opacity: 0;
+  transition: opacity 0.15s;
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+[data-theme="light"] .swatch::after { content: attr(data-light); }
+[data-theme="dark"] .swatch::after { color: var(--label-dark); }
+[data-theme="light"] .swatch::after { color: var(--label-light); }
+.swatch { position: relative; }
+.swatch:hover::after { opacity: 1; }
+
+/* ── IDE mockup frame ── */
+.ide {
+  border: 1px solid var(--cursor);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.ide-titlebar {
+  background: var(--bg-raised);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--white);
+  border-bottom: 1px solid var(--cursor);
+}
+.ide-dots {
+  display: flex;
+  gap: 5px;
+}
+.ide-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.ide-body {
+  display: flex;
+  min-height: 280px;
+}
+.ide-sidebar {
+  background: var(--bg-mid);
+  width: 170px;
+  flex-shrink: 0;
+  padding: 8px 0;
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  border-right: 1px solid var(--cursor);
+  color: var(--white);
+}
+.ide-sidebar .file {
+  padding: 0 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ide-sidebar .file.active {
+  background: var(--bg-deep);
+  color: var(--bright-white);
+}
+.ide-sidebar .dir {
+  padding: 0 12px;
+  color: var(--yellow);
+}
+.ide-editor {
+  background: var(--bg-deep);
+  color: var(--white);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ide-tabs {
+  background: var(--bg-mid);
+  display: flex;
+  font-size: 0.75rem;
+  border-bottom: 1px solid var(--cursor);
+}
+.ide-tab {
+  padding: 5px 14px;
+  color: var(--bright-black);
+  border-right: 1px solid var(--cursor);
+}
+.ide-tab.active {
+  background: var(--bg-deep);
+  color: var(--bright-white);
+  border-bottom: 3px solid var(--accent);
+}
+.ide-code {
+  flex: 1;
+  padding: 8px 12px;
+  overflow-x: auto;
+  font-family: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  white-space: pre;
+}
+.ide-code .line-num {
+  display: inline-block;
+  width: 2.5em;
+  text-align: right;
+  padding-right: 1em;
+  color: var(--bright-black);
+  user-select: none;
+}
+.ide-statusbar {
+  background: var(--bg-raised);
+  padding: 3px 12px;
+  font-size: 0.7rem;
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--cursor);
+}
+
+/* ── Standalone code/terminal blocks (kept for simplicity) ── */
+.tk-keyword { color: var(--bright-red); }
+.tk-string { color: var(--green); }
+.tk-comment { color: var(--blue); font-style: italic; }
+.tk-number { color: var(--bright-yellow); }
+.tk-function { color: var(--bright-blue); }
+.tk-type { color: var(--yellow); }
+.tk-variable { color: var(--bright-magenta); }
+
+.terminal {
+  background: var(--bg-deep);
+  color: var(--white);
+  border: 1px solid var(--cursor);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.terminal-titlebar {
+  background: var(--bg-raised);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--white);
+  border-bottom: 1px solid var(--cursor);
+}
+.terminal-body {
+  padding: 10px 14px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--bright-white);
+}
+.selected-text {
+  background: var(--selection);
+  border-radius: 2px;
+}
+.cursor-line {
+  background: var(--bg-mid);
+  position: relative;
+}
+.cursor-bar {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--cursor);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cursor);
+  font-size: 0.8rem;
+  color: var(--white);
+}
+footer a { color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div><h1>Low Gravitas Zen</h1><div style="font-size: 0.85rem; color: var(--bright-black); margin-top: 2px;">A warm, low-blue-light color theme for editors and terminals. WCAG AA contrast.</div></div>
+  <button class="toggle" id="theme-toggle" onclick="toggleTheme()">Switch to Light</button>
+</header>
+
+<h2>Palette</h2>
+<div class="swatches">
+<div class="swatch" style="background: var(--black); --label-dark: #ffffff; --label-light: #ffffff;" data-dark="#5f5f5f" data-light="#474747"><span>black</span></div>
+<div class="swatch" style="background: var(--red); --label-dark: #000000; --label-light: #ffffff;" data-dark="#c9615e" data-light="#a83e3c"><span>red</span></div>
+<div class="swatch" style="background: var(--green); --label-dark: #000000; --label-light: #ffffff;" data-dark="#70be9b" data-light="#1a6b4d"><span>green</span></div>
+<div class="swatch" style="background: var(--yellow); --label-dark: #000000; --label-light: #ffffff;" data-dark="#e2d072" data-light="#6a5510"><span>yellow</span></div>
+<div class="swatch" style="background: var(--blue); --label-dark: #000000; --label-light: #ffffff;" data-dark="#5580aa" data-light="#2e5a80"><span>blue</span></div>
+<div class="swatch" style="background: var(--magenta); --label-dark: #000000; --label-light: #ffffff;" data-dark="#d38dbb" data-light="#7d3e69"><span>magenta</span></div>
+<div class="swatch" style="background: var(--cyan); --label-dark: #000000; --label-light: #ffffff;" data-dark="#7bd8db" data-light="#005f62"><span>cyan</span></div>
+<div class="swatch" style="background: var(--white); --label-dark: #000000; --label-light: #ffffff;" data-dark="#e2e2d5" data-light="#45453c"><span>white</span></div>
+<div class="swatch" style="background: var(--bright-black); --label-dark: #000000; --label-light: #ffffff;" data-dark="#82a092" data-light="#466656"><span>bright-black</span></div>
+<div class="swatch" style="background: var(--bright-red); --label-dark: #000000; --label-light: #ffffff;" data-dark="#ec8e8c" data-light="#c03030"><span>bright-red</span></div>
+<div class="swatch" style="background: var(--bright-green); --label-dark: #000000; --label-light: #ffffff;" data-dark="#a9f9d5" data-light="#008050"><span>bright-green</span></div>
+<div class="swatch" style="background: var(--bright-yellow); --label-dark: #000000; --label-light: #ffffff;" data-dark="#e6d7ae" data-light="#7d6b00"><span>bright-yellow</span></div>
+<div class="swatch" style="background: var(--bright-blue); --label-dark: #000000; --label-light: #ffffff;" data-dark="#a3cbf5" data-light="#1670aa"><span>bright-blue</span></div>
+<div class="swatch" style="background: var(--bright-magenta); --label-dark: #000000; --label-light: #ffffff;" data-dark="#fbbee8" data-light="#a8408a"><span>bright-magenta</span></div>
+<div class="swatch" style="background: var(--bright-cyan); --label-dark: #000000; --label-light: #000000;" data-dark="#a1e5e8" data-light="#009095"><span>bright-cyan</span></div>
+<div class="swatch" style="background: var(--bright-white); --label-dark: #000000; --label-light: #ffffff;" data-dark="#fffefe" data-light="#2a2a28"><span>bright-white</span></div>
+<div class="swatch" style="background: var(--bg-deep); --label-dark: #ffffff; --label-light: #000000;" data-dark="#100c00" data-light="#f5f0e6"><span>bg-deep</span></div>
+<div class="swatch" style="background: var(--bg-mid); --label-dark: #ffffff; --label-light: #000000;" data-dark="#20190c" data-light="#e8e0d4"><span>bg-mid</span></div>
+<div class="swatch" style="background: var(--bg-raised); --label-dark: #ffffff; --label-light: #000000;" data-dark="#302318" data-light="#dbd0c2"><span>bg-raised</span></div>
+<div class="swatch" style="background: var(--selection); --label-dark: #ffffff; --label-light: #000000;" data-dark="#40463c" data-light="#c8cec0"><span>selection</span></div>
+<div class="swatch" style="background: var(--cursor); --label-dark: #000000; --label-light: #000000;" data-dark="#86766d" data-light="#8a7e74"><span>cursor</span></div>
+<div class="swatch" style="background: var(--accent); --label-dark: #000000; --label-light: #ffffff;" data-dark="#ffff86" data-light="#c84820"><span>accent</span></div>
+
+</div>
+
+<h2>Editor</h2>
+<div class="ide">
+  <div class="ide-titlebar">
+    <div class="ide-dots">
+      <span style="background: var(--red);"></span>
+      <span style="background: var(--yellow);"></span>
+      <span style="background: var(--green);"></span>
+    </div>
+    <span>fibonacci.py &mdash; Low Gravitas Zen</span>
+  </div>
+  <div class="ide-body">
+    <div class="ide-sidebar">
+      <div class="dir">src/</div>
+      <div class="file active">&nbsp;&nbsp;fibonacci.py</div>
+      <div class="file">&nbsp;&nbsp;utils.py</div>
+      <div class="file">&nbsp;&nbsp;config.toml</div>
+      <div class="dir">tests/</div>
+      <div class="file">&nbsp;&nbsp;test_fib.py</div>
+      <div class="dir">docs/</div>
+      <div class="file">&nbsp;&nbsp;README.md</div>
+    </div>
+    <div class="ide-editor">
+      <div class="ide-tabs">
+        <div class="ide-tab active">fibonacci.py</div>
+        <div class="ide-tab">utils.py</div>
+      </div>
+      <div class="ide-code"><span><span class="line-num"> 1</span><span class="tk-keyword">def</span> <span class="tk-function">fibonacci</span>(n: <span class="tk-type">int</span>) -&gt; <span class="tk-type">list</span>[<span class="tk-type">int</span>]:</span>
+<span><span class="line-num"> 2</span>    <span class="tk-string">"""Generate Fibonacci sequence up to n terms."""</span></span>
+<span><span class="line-num"> 3</span>    <span class="tk-keyword">if</span> n &lt;= <span class="tk-number">0</span>:</span>
+<span><span class="line-num"> 4</span>        <span class="tk-keyword">return</span> []</span>
+<span><span class="line-num"> 5</span>    sequence = [<span class="tk-number">0</span>, <span class="tk-number">1</span>]</span>
+<span><span class="line-num"> 6</span>    <span class="tk-keyword">for</span> i <span class="tk-keyword">in</span> <span class="selected-text"><span class="tk-type">range</span>(<span class="tk-number">2</span>, n)</span>:</span>
+<span><span class="line-num"> 7</span>        sequence.append(sequence[-<span class="tk-number">1</span>] + sequence[-<span class="tk-number">2</span>])</span>
+<span><span class="line-num"> 8</span>    <span class="tk-keyword">return</span> sequence[:n]</span>
+<span><span class="line-num"> 9</span></span>
+<span><span class="line-num">10</span><span class="tk-comment"># Print the first 10 Fibonacci numbers</span></span>
+<span><span class="line-num">11</span>result = fibonacci(<span class="tk-number">10</span>)</span>
+<span class="cursor-line"><span class="line-num">12</span><span class="tk-type">print</span>(<span class="tk-string">f"Fibonacci: {result}"</span>)<span class="cursor-bar"></span></span></div>
+    </div>
+  </div>
+  <div class="ide-statusbar">
+    <span>Python 3.14 &bull; UTF-8 &bull; LF</span>
+    <span>Ln 1, Col 1</span>
+  </div>
+</div>
+
+<div class="ide">
+  <div class="ide-titlebar">
+    <div class="ide-dots">
+      <span style="background: var(--red);"></span>
+      <span style="background: var(--yellow);"></span>
+      <span style="background: var(--green);"></span>
+    </div>
+    <span>api.js &mdash; Low Gravitas Zen</span>
+  </div>
+  <div class="ide-body">
+    <div class="ide-sidebar">
+      <div class="dir">src/</div>
+      <div class="file active">&nbsp;&nbsp;api.js</div>
+      <div class="file">&nbsp;&nbsp;index.js</div>
+      <div class="file">&nbsp;&nbsp;types.ts</div>
+      <div class="dir">components/</div>
+      <div class="file">&nbsp;&nbsp;App.tsx</div>
+    </div>
+    <div class="ide-editor">
+      <div class="ide-tabs">
+        <div class="ide-tab active">api.js</div>
+        <div class="ide-tab">index.js</div>
+      </div>
+      <div class="ide-code"><span><span class="line-num">1</span><span class="tk-keyword">const</span> fetchUserData = <span class="tk-keyword">async</span> (userId) =&gt; {</span>
+<span><span class="line-num">2</span>  <span class="tk-keyword">try</span> {</span>
+<span><span class="line-num">3</span>    <span class="tk-keyword">const</span> response = <span class="tk-keyword">await</span> fetch(<span class="tk-string">`/api/users/${userId}`</span>);</span>
+<span><span class="line-num">4</span>    <span class="tk-keyword">if</span> (!response.ok) {</span>
+<span><span class="line-num">5</span>      <span class="tk-keyword">throw</span> <span class="tk-keyword">new</span> Error(<span class="tk-string">`HTTP ${response.status}`</span>);</span>
+<span><span class="line-num">6</span>    }</span>
+<span><span class="line-num">7</span>    <span class="tk-keyword">const</span> { name, email, role } = <span class="tk-keyword">await</span> response.json();</span>
+<span><span class="line-num">8</span>    <span class="tk-keyword">return</span> { name, email, role, active: <span class="tk-keyword">true</span> };</span>
+<span><span class="line-num">9</span>  } <span class="tk-keyword">catch</span> (error) {</span>
+<span><span class="line-num">10</span>    console.error(<span class="tk-string">"Failed to fetch user:"</span>, error);</span>
+<span><span class="line-num">11</span>    <span class="tk-keyword">return</span> <span class="tk-keyword">null</span>;</span>
+<span><span class="line-num">12</span>  }</span>
+<span><span class="line-num">13</span>};</span></div>
+    </div>
+  </div>
+  <div class="ide-statusbar">
+    <span>JavaScript &bull; UTF-8 &bull; LF</span>
+    <span>Ln 1, Col 1</span>
+  </div>
+</div>
+
+<h2>Terminal</h2>
+<div class="terminal">
+  <div class="terminal-titlebar">
+    <div class="ide-dots">
+      <span style="background: var(--red);"></span>
+      <span style="background: var(--yellow);"></span>
+      <span style="background: var(--green);"></span>
+    </div>
+    <span>bash &mdash; 80x24</span>
+  </div>
+  <div class="terminal-body">
+    <span style="color: var(--green);">user@host</span>:<span style="color: var(--bright-blue);">~/project</span>$ git status<br>
+    <span style="color: var(--bright-black);">On branch main</span><br>
+    <span style="color: var(--green);">  modified:   src/fibonacci.py</span><br>
+    <span style="color: var(--red);">  deleted:    old_config.yaml</span><br>
+    <span style="color: var(--bright-yellow);">  new file:   <span style="background: var(--terminal-selection-bg); color: var(--terminal-selection-fg);">README.md</span></span><br>
+    <br>
+    <span style="color: var(--green);">user@host</span>:<span style="color: var(--bright-blue);">~/project</span>$ echo <span style="color: var(--green);">"Hello, World!"</span><br>
+    Hello, World!
+  </div>
+</div>
+
+<footer>
+  Low Gravitas Zen v1.2.0 &mdash;
+  <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a>
+</footer>
+</div>
+
+<script>
+function toggleTheme() {
+  const el = document.documentElement;
+  const current = el.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  el.setAttribute('data-theme', next);
+  localStorage.setItem('lgz-theme', next);
+  updateToggleLabel(next);
+}
+function updateToggleLabel(theme) {
+  document.getElementById('theme-toggle').textContent =
+    theme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+}
+const saved = localStorage.getItem('lgz-theme');
+if (saved) {
+  document.documentElement.setAttribute('data-theme', saved);
+  updateToggleLabel(saved);
+}
+</script>
+</body>
+</html>
