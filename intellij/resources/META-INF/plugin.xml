@@ -2,7 +2,7 @@
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>com.lowgravitas.low-gravitas-zen</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
@@ -12,7 +12,7 @@
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="support@lowgravitas.com" url="https://lowgravitas.com">Low Gravitas</vendor>
 
-    <idea-version since-build="231" until-build="241.*"/>
+    <idea-version since-build="231" until-build="253.*"/>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -30,14 +30,16 @@
         </li>
     </ul>
 
-    Built with IntelliJ IDEA 2023.3. Also tested with RubyMine 2023.3. It should work with other IDEs or versions, but
-    this is not guaranteed. In particular, versions prior to 2019.2 may have issues.
+    Built with IntelliJ IDEA 2024.2.3, updated for 2025.3 (Islands theme support). Also tested with RubyMine.
+    It should work with other IDEs or versions, but this is not guaranteed.
   ]]></description>
 
     <!-- Short summary of new features and bugfixes in the latest plugin version.
          Displayed on the Plugin Page and IDE Plugin Manager. Simple HTML elements can be included between <![CDATA[  ]]> tags. -->
     <change-notes><![CDATA[
     <ul>
+        <li>1.1.0  Update version compatibility through 2025.3. Add Islands theme support. Sync console colors with unified palette.</li>
+        <li>1.0.1  Update version compatibility.</li>
         <li>1.0.0  Initial release of the theme.</li>
     </ul>
   ]]></change-notes>

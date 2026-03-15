@@ -258,58 +258,58 @@
         </option>
         <option name="CONSOLE_BLUE_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="C7C7FF" />
+                <option name="FOREGROUND" value="4B759D" />
             </value>
         </option>
         <option name="CONSOLE_CYAN_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="06B8B8" />
+                <option name="FOREGROUND" value="7BD8DB" />
             </value>
         </option>
         <option name="CONSOLE_ERROR_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="FFB3B3" />
+                <option name="FOREGROUND" value="EC8E8C" />
             </value>
         </option>
         <option name="CONSOLE_GRAY_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="A7A7A7" />
+                <option name="FOREGROUND" value="82A092" />
             </value>
         </option>
         <option name="CONSOLE_GREEN_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="68E868" />
+                <option name="FOREGROUND" value="70BE9B" />
             </value>
         </option>
         <option name="CONSOLE_MAGENTA_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="FF2EFF" />
+                <option name="FOREGROUND" value="D38DBB" />
             </value>
         </option>
         <option name="CONSOLE_NORMAL_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="FFFFFF" />
+                <option name="FOREGROUND" value="E2E2D5" />
             </value>
         </option>
         <option name="CONSOLE_RED_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="FF6667" />
+                <option name="FOREGROUND" value="C9615E" />
             </value>
         </option>
         <option name="CONSOLE_SYSTEM_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="E4E4FF" />
+                <option name="FOREGROUND" value="A3CBF5" />
             </value>
         </option>
         <option name="CONSOLE_USER_INPUT">
             <value>
-                <option name="FOREGROUND" value="6AE96A" />
+                <option name="FOREGROUND" value="A9F9D5" />
                 <option name="FONT_TYPE" value="2" />
             </value>
         </option>
         <option name="CONSOLE_YELLOW_OUTPUT">
             <value>
-                <option name="FOREGROUND" value="754200" />
+                <option name="FOREGROUND" value="E2D072" />
             </value>
         </option>
         <option name="CSS.COMMENT">

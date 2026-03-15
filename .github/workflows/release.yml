@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-intellij-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build IntelliJ plugin JAR
+        run: |
+          cd intellij/resources
+          jar cf ../../low-gravitas-zen.jar META-INF/ lowgravitaszen.theme.json low_gravitas_zen.xml
+          cd ../..
+          echo "Built low-gravitas-zen.jar"
+          jar tf low-gravitas-zen.jar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: low-gravitas-zen.jar
+          generate_release_notes: true

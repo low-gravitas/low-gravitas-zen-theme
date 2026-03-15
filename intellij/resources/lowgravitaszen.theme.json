@@ -2,9 +2,10 @@
   "name": "Low Gravitas Zen",
   "author": "Low Gravitas",
   "dark": true,
+  "parentTheme": "Islands Dark",
   "editorScheme": "/low_gravitas_zen.xml",
   "colors": {
-    "background": "#20190c",
+    "background": "#100c00",
     "backgroundEmpty": "#251000",
     "backgroundHighlights": "#302318",
     "backgroundHighlightsShading": "#473020ab",
@@ -20,7 +21,7 @@
     "backgroundHighlightsShade2Shading": "#40463cc3",
     "emphasizedContent": "#46303c",
     "brightYellow": "#e2d072",
-    "brightGreen": "#86ff86",
+    "brightGreen": "#a9f9d5",
     "brightBlue": "#a3cbf5",
     "brightViolet": "#fbbee8",
     "brightOrange": "#ff9944",
@@ -160,7 +161,10 @@
       "underlinedTabBackground": "background",
       "underlinedTabForeground": "primaryText",
       "inactiveColoredFileBackground": "backgroundHighlightsShade1",
-      "underlineHeight": 4
+      "underlineHeight": 4,
+      "underlinedBorderColor": "brightYellow",
+      "inactiveUnderlinedTabBorderColor": "yellow",
+      "inactiveUnderlinedTabBackground": "backgroundHighlightsShade1"
     },
     "FileColor": {
       "Blue": "blueTransparent",
@@ -276,7 +280,17 @@
       "background": "background",
       "errorForeground": "brightRose"
     },
-    "StatusBar.borderColor": "background",
+    "Island": {
+      "borderColor": "emphasizedContent",
+      "arc": 20,
+      "borderWidth": 5,
+      "inactiveAlpha": 0.44
+    },
+    "Islands": 1,
+    "MainWindow.background": "background",
+    "MainToolbar.borderColor": "#100c0000",
+    "StatusBar.borderColor": "#100c0000",
+    "ToolWindow.Stripe.borderColor": "#100c0000",
     "TabbedPane": {
       "underlineColor": "backgroundHighlightsShade2",
       "disabledUnderlineColor": "backgroundHighlightsShade2",
@@ -310,6 +324,7 @@
       "Actions.background": "background"
     },
     "ToolWindow": {
+      "background": "background",
       "Header": {
         "background": "backgroundHighlightsShade1",
         "inactiveBackground": "backgroundHighlights",
