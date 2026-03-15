@@ -6,7 +6,7 @@ on:
     paths:
       - 'palette.toml'
       - 'generate.py'
-      - 'docs/**'
+      - 'site/**'
 
 permissions:
   contents: read
