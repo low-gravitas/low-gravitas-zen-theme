@@ -1,6 +1,6 @@
-# Low Gravitas Zen light v1.2.0
+# Low Gravitas Zen light v1.2.1
 # GENERATED — edit palette.toml, then run: python3 generate.py
-accent: "#8040d0"
+accent: "#5c2d91"
 background: "#f5f0e6"
 foreground: "#45453c"
 details: "lighter"

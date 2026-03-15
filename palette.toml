@@ -3,7 +3,7 @@
 
 [meta]
 name = "Low Gravitas Zen"
-version = "1.2.0"
+version = "1.2.1"
 
 # ── 16 ANSI colors ──────────────────────────────────────────────────────────
 [base]
@@ -53,7 +53,7 @@ bg_mid    = "#e8e0d4"
 bg_raised = "#dbd0c2"
 selection = "#c8cec0"
 cursor    = "#8a7e74"
-accent    = "#8040d0"
+accent    = "#5c2d91"
 
 # ANSI colors: darkened to contrast against light backgrounds
 black          = "#474747"
