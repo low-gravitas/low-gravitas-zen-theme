@@ -14,6 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Build IntelliJ plugin JAR
         run: |
           cd intellij/resources
@@ -22,10 +27,22 @@ jobs:
           echo "Built low-gravitas-zen.jar"
           jar tf low-gravitas-zen.jar
 
+      - name: Generate site CSS
+        run: python3 generate.py --site
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: low-gravitas-zen.jar
+          files: |
+            low-gravitas-zen.jar
+            docs/low-gravitas-zen.css
+            docs/low-gravitas-common.css
+            ghostty/LowGravitasZen
+            ghostty/LowGravitasZenLight
+            warp/low_gravitas_zen_theme.yaml
+            warp/low_gravitas_zen_light_theme.yaml
+            iTerm2/LowGravitasZen.itermcolors
+            iTerm2/LowGravitasZenLight.itermcolors
           generate_release_notes: true
 
       - name: Generate hub token
