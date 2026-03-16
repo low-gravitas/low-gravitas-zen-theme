@@ -38,8 +38,33 @@ h2 {
   font-size: 1.25rem;
   font-weight: 700;
   margin: 2rem 0 0.75rem;
-  color: var(--lgz-yellow);
+  color: var(--lgz-bright-blue);
 }
+
+/* ── Per-demo wrappers ── */
+
+.demo-section { margin-bottom: 1.5rem; }
+
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.demo-header h2 { margin-top: 0; }
+.demo-header:not(:has(h2)) { justify-content: flex-end; margin-bottom: 6px; }
+
+.demo-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: border-color 0.15s;
+}
+.demo-toggle:hover { border-color: var(--accent); }
+.demo-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── Swatches ── */
 
@@ -207,6 +232,7 @@ h2 {
   .cursor-bar { animation: none; }
   .swatch { transition: none; }
   .ide, .terminal { transition: none; }
+  .demo-toggle { transition: none; }
 }
 
 /* ── Responsive ── */

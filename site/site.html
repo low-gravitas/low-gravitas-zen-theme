@@ -25,7 +25,7 @@
   <div class="nav-right">
     <a href="low-gravitas-zen.css">CSS Tokens</a>
     <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a>
-    <button id="theme-toggle" aria-label="Toggle light/dark theme">Switch to Light</button>
+    <button id="theme-toggle" aria-label="Toggle light/dark theme"></button>
   </div>
 </nav>
 <main id="main">
@@ -38,40 +38,69 @@
     </div>
   </div>
 
-  <h2>Palette</h2>
-  <div class="swatches fade-in">
+  <div class="demo-section">
+    <div class="demo-header">
+      <h2>Palette</h2>
+      <button class="demo-toggle" aria-label="Toggle demo theme"><span class="demo-toggle-label">Light</span></button>
+    </div>
+    <div class="demo" data-theme="dark">
+      <div class="swatches fade-in">
 {{swatches}}
+      </div>
+    </div>
   </div>
 
   <h2>Editor</h2>
-  <div class="ide fade-in">
-    <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>fibonacci.py &mdash; Low Gravitas Zen</span></div>
-    <div class="ide-body">
-      <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;fibonacci.py</div><div class="file">&nbsp;&nbsp;utils.py</div><div class="file">&nbsp;&nbsp;config.toml</div><div class="dir">tests/</div><div class="file">&nbsp;&nbsp;test_fib.py</div><div class="dir">docs/</div><div class="file">&nbsp;&nbsp;README.md</div></div>
-      <div class="ide-editor">
-        <div class="ide-tabs"><div class="ide-tab active">fibonacci.py</div><div class="ide-tab">utils.py</div></div>
-        <div class="ide-code">{{python_code}}</div>
+
+  <div class="demo-section">
+    <div class="demo-header">
+      <button class="demo-toggle" aria-label="Toggle demo theme"><span class="demo-toggle-label">Light</span></button>
+    </div>
+    <div class="demo" data-theme="dark">
+      <div class="ide fade-in">
+        <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>fibonacci.py &mdash; Low Gravitas Zen</span></div>
+        <div class="ide-body">
+          <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;fibonacci.py</div><div class="file">&nbsp;&nbsp;utils.py</div><div class="file">&nbsp;&nbsp;config.toml</div><div class="dir">tests/</div><div class="file">&nbsp;&nbsp;test_fib.py</div><div class="dir">docs/</div><div class="file">&nbsp;&nbsp;README.md</div></div>
+          <div class="ide-editor">
+            <div class="ide-tabs"><div class="ide-tab active">fibonacci.py</div><div class="ide-tab">utils.py</div></div>
+            <div class="ide-code">{{python_code}}</div>
+          </div>
+        </div>
+        <div class="ide-statusbar"><span>Python 3.14 &bull; UTF-8 &bull; LF</span><span>Ln 12, Col 24</span></div>
       </div>
     </div>
-    <div class="ide-statusbar"><span>Python 3.14 &bull; UTF-8 &bull; LF</span><span>Ln 12, Col 24</span></div>
   </div>
 
-  <div class="ide fade-in">
-    <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>api.js &mdash; Low Gravitas Zen</span></div>
-    <div class="ide-body">
-      <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;api.js</div><div class="file">&nbsp;&nbsp;index.js</div><div class="file">&nbsp;&nbsp;types.ts</div><div class="dir">components/</div><div class="file">&nbsp;&nbsp;App.tsx</div></div>
-      <div class="ide-editor">
-        <div class="ide-tabs"><div class="ide-tab active">api.js</div><div class="ide-tab">index.js</div></div>
-        <div class="ide-code">{{js_code}}</div>
+  <div class="demo-section">
+    <div class="demo-header">
+      <button class="demo-toggle" aria-label="Toggle demo theme"><span class="demo-toggle-label">Light</span></button>
+    </div>
+    <div class="demo" data-theme="dark">
+      <div class="ide fade-in">
+        <div class="ide-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>api.js &mdash; Low Gravitas Zen</span></div>
+        <div class="ide-body">
+          <div class="ide-sidebar"><div class="dir">src/</div><div class="file active">&nbsp;&nbsp;api.js</div><div class="file">&nbsp;&nbsp;index.js</div><div class="file">&nbsp;&nbsp;types.ts</div><div class="dir">components/</div><div class="file">&nbsp;&nbsp;App.tsx</div></div>
+          <div class="ide-editor">
+            <div class="ide-tabs"><div class="ide-tab active">api.js</div><div class="ide-tab">index.js</div></div>
+            <div class="ide-code">{{js_code}}</div>
+          </div>
+        </div>
+        <div class="ide-statusbar"><span>JavaScript &bull; UTF-8 &bull; LF</span><span>Ln 1, Col 1</span></div>
       </div>
     </div>
-    <div class="ide-statusbar"><span>JavaScript &bull; UTF-8 &bull; LF</span><span>Ln 1, Col 1</span></div>
   </div>
 
-  <h2>Terminal</h2>
-  <div class="terminal fade-in">
-    <div class="terminal-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>bash &mdash; 80x24</span></div>
-    <div class="terminal-body"><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ git status<br><span style="color:var(--text-dim)">On branch main</span><br><span style="color:var(--lgz-green)">  modified:   src/fibonacci.py</span><br><span style="color:var(--lgz-red)">  deleted:    old_config.yaml</span><br><span style="color:var(--lgz-bright-yellow)">  new file:   <span style="background:var(--selection-bg);color:var(--selection-fg)">README.md</span></span><br><br><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ echo <span style="color:var(--lgz-green)">"Hello, World!"</span><br>Hello, World!</div>
+  <div class="demo-section">
+    <div class="demo-header">
+      <h2>Terminal</h2>
+      <button class="demo-toggle" aria-label="Toggle demo theme"><span class="demo-toggle-label">Light</span></button>
+    </div>
+    <div class="demo" data-theme="dark">
+      <div class="terminal fade-in">
+        <div class="terminal-titlebar"><div class="ide-dots"><span style="background:var(--lgz-red)"></span><span style="background:var(--lgz-yellow)"></span><span style="background:var(--lgz-green)"></span></div><span>bash &mdash; 80x24</span></div>
+        <div class="terminal-body"><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ git status<br><span style="color:var(--text-dim)">On branch main</span><br><span style="color:var(--lgz-green)">  modified:   src/fibonacci.py</span><br><span style="color:var(--lgz-red)">  deleted:    old_config.yaml</span><br><span style="color:var(--lgz-bright-yellow)">  new file:   <span style="background:var(--selection-bg);color:var(--selection-fg)">README.md</span></span><br><br><span style="color:var(--lgz-green)">user@host</span>:<span style="color:var(--lgz-bright-blue)">~/project</span>$ echo <span style="color:var(--lgz-green)">"Hello, World!"</span><br>Hello, World!</div>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -81,18 +110,30 @@
 (function() {
   const themeBtn = document.getElementById('theme-toggle');
   let userTheme = sessionStorage.getItem('theme') || null;
+  themeBtn.textContent = String.fromCodePoint(0xF050E);
 
   function getTheme() {
     if (userTheme) return userTheme;
     return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   }
+
+  function syncDemos(theme) {
+    document.querySelectorAll('.demo-section').forEach(section => {
+      section.querySelector('.demo').setAttribute('data-theme', theme);
+      const label = section.querySelector('.demo-toggle-label');
+      if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    });
+  }
+
   function applyTheme() {
+    const theme = getTheme();
     if (userTheme) document.documentElement.setAttribute('data-theme', userTheme);
     else document.documentElement.removeAttribute('data-theme');
-    themeBtn.textContent = getTheme() === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+    syncDemos(theme);
   }
 
   if (userTheme) applyTheme();
+  else syncDemos(getTheme());
 
   themeBtn.addEventListener('click', () => {
     userTheme = getTheme() === 'dark' ? 'light' : 'dark';
@@ -102,6 +143,17 @@
 
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
     if (!userTheme) applyTheme();
+  });
+
+  document.querySelectorAll('.demo-toggle').forEach(btn => {
+    const section = btn.closest('.demo-section');
+    const demo = section.querySelector('.demo');
+    btn.addEventListener('click', () => {
+      const current = demo.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      demo.setAttribute('data-theme', next);
+      btn.querySelector('.demo-toggle-label').textContent = next === 'dark' ? 'Light' : 'Dark';
+    });
   });
 
   const fadeObserver = new IntersectionObserver((entries) => {

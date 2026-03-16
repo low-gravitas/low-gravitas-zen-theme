@@ -2248,7 +2248,8 @@ def generate_site():
         r'\S)'
     )
 
-    def _tokenize(code, keywords, builtins=None, track_def=False):
+    def _tokenize(code, keywords, builtins=None, track_def=False,
+                   color_vars=False):
         builtins = builtins or set()
         prev_was_def = False
         for m in _TOK_PATTERN.finditer(code):
@@ -2265,12 +2266,15 @@ def generate_site():
                 yield ("tk-number", t)
             elif t in keywords:
                 yield ("tk-keyword", t)
-                prev_was_def = track_def and t == "def"
+                prev_was_def = track_def and (t in ("def", "function"))
                 continue
             elif prev_was_def:
                 yield ("tk-function", t)
             elif t in builtins:
                 yield ("tk-type", t)
+            elif color_vars and _re.fullmatch(r'[A-Za-z_$]\w*', t):
+                is_prop = m.start() > 0 and code[m.start() - 1] == '.'
+                yield (None if is_prop else "tk-variable", t)
             else:
                 yield (None, t)
             prev_was_def = False
@@ -2279,8 +2283,9 @@ def generate_site():
         return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     def _tokens_to_html(code, tokenizer_args):
-        keywords, builtins, track_def = tokenizer_args
-        tokens = list(_tokenize(code, keywords, builtins, track_def))
+        keywords, builtins, track_def, color_vars = tokenizer_args
+        tokens = list(_tokenize(code, keywords, builtins, track_def,
+                                color_vars))
         parts = []
         pos = 0
         tok_iter = iter(tokens)
@@ -2313,10 +2318,13 @@ def generate_site():
              "import","export","from","of","in","for","while","switch","case","break","default","do","yield"}
 
     def colorize_python(code):
-        return _tokens_to_html(code, (PY_KW, PY_BUILTIN, True))
+        return _tokens_to_html(code, (PY_KW, PY_BUILTIN, True, False))
+
+    JS_BUILTIN = {"console","document","window","Math","JSON","Promise",
+                   "Array","Object","String","Number","Error","Date","Map","Set","setTimeout","fetch"}
 
     def colorize_js(code):
-        return _tokens_to_html(code, (JS_KW, set(), False))
+        return _tokens_to_html(code, (JS_KW, JS_BUILTIN, True, True))
 
     def _add_line_numbers(html_code):
         lines = html_code.split("\n")
@@ -2368,19 +2376,23 @@ def generate_site():
     )
 
     js_sample = (
-        'const fetchUserData = async (userId) => {\n'
-        '  try {\n'
-        '    const response = await fetch(`/api/users/${userId}`);\n'
-        '    if (!response.ok) {\n'
-        '      throw new Error(`HTTP ${response.status}`);\n'
+        '// Fetch user data with retry and timeout\n'
+        'async function fetchUser(userId) {\n'
+        '  const maxRetries = 3;\n'
+        '  for (let attempt = 1; attempt <= maxRetries; attempt++) {\n'
+        '    try {\n'
+        '      const response = await fetch(`/api/users/${userId}`);\n'
+        '      if (!response.ok) {\n'
+        '        throw new Error(`HTTP ${response.status}`);\n'
+        '      }\n'
+        '      const { name, email, role } = await response.json();\n'
+        '      return { name, email, role, active: true };\n'
+        '    } catch (error) {\n'
+        '      if (attempt === maxRetries) throw error;\n'
+        '      await new Promise(r => setTimeout(r, 500 * attempt));\n'
         '    }\n'
-        '    const { name, email, role } = await response.json();\n'
-        '    return { name, email, role, active: true };\n'
-        '  } catch (error) {\n'
-        '    console.error("Failed to fetch user:", error);\n'
-        '    return null;\n'
         '  }\n'
-        '};'
+        '}'
     )
 
     # ── Generate swatches ────────────────────────────────────────────────

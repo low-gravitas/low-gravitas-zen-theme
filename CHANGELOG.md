@@ -5,6 +5,19 @@ All notable changes to the Low Gravitas Zen theme collection will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-03-16
+
+### Added
+
+- Per-demo dark/light toggle buttons on theme site (palette, each editor, terminal)
+- Nav header on hub site with links to Zen Theme and Symbol Font sites
+- JS code sample: variable coloring, comment, numeric literals, function name highlighting
+
+### Changed
+
+- Page-level theme toggle now uses symbol font icon instead of text (all sites)
+- Hub site now uses shared `low-gravitas-common.css` for consistent nav/footer layout
+
 ## [1.3.0] - 2026-03-15
 
 ### Added
