@@ -1,30 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark light">
 <meta name="description" content="A warm, low-blue-light color theme for editors and terminals. Dark and light variants. WCAG AA contrast.">
 <title>Low Gravitas Zen — Theme Preview</title>
+<link rel="preload" href="https://low-gravitas.github.io/LowGravitasSymbols.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="low-gravitas-zen.css">
+<link rel="stylesheet" href="low-gravitas-common.css">
 <link rel="stylesheet" href="site.css">
+<style>
+@font-face {
+  font-family: 'LowGravitasSymbols';
+  src: url('https://low-gravitas.github.io/LowGravitasSymbols.ttf') format('truetype');
+  font-display: swap;
+}
+</style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <nav>
-  <span class="nav-left">Low Gravitas Zen</span>
+  <span class="nav-left"><span class="brand" aria-hidden="true">&#xE900;</span> Low Gravitas Zen</span>
   <div class="nav-right">
     <a href="low-gravitas-zen.css">CSS Tokens</a>
     <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a>
     <button id="theme-toggle" aria-label="Toggle light/dark theme">Switch to Light</button>
   </div>
 </nav>
-<main>
+<main id="main">
   <div class="hero">
     <h1>Low Gravitas Zen</h1>
     <p class="tagline">A warm, low-blue-light color theme for editors and terminals. Dark and light variants with WCAG AA contrast.</p>
     <div class="actions">
-      <a class="btn primary" href="https://github.com/low-gravitas/low-gravitas-zen-theme">View on GitHub</a>
-      <a class="btn" href="low-gravitas-zen.css">Download CSS Tokens</a>
+      <a class="btn primary" href="low-gravitas-zen.css">Download CSS Tokens</a>
+      <a class="btn" href="https://github.com/low-gravitas/low-gravitas-zen-theme">View on GitHub</a>
     </div>
   </div>
 
@@ -65,21 +75,35 @@
   </div>
 </main>
 
-<footer>Low Gravitas Zen v{{version}} &mdash; <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a></footer>
+<footer>&copy; 2026 Low Gravitas. <a href="https://github.com/low-gravitas/low-gravitas-zen-theme">GitHub</a></footer>
 
 <script>
 (function() {
   const themeBtn = document.getElementById('theme-toggle');
-  function getTheme() { return document.documentElement.getAttribute('data-theme') || 'dark'; }
-  function updateLabel() { themeBtn.textContent = getTheme() === 'dark' ? 'Switch to Light' : 'Switch to Dark'; }
+  let userTheme = sessionStorage.getItem('theme') || null;
+
+  function getTheme() {
+    if (userTheme) return userTheme;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  function applyTheme() {
+    if (userTheme) document.documentElement.setAttribute('data-theme', userTheme);
+    else document.documentElement.removeAttribute('data-theme');
+    themeBtn.textContent = getTheme() === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+  }
+
+  if (userTheme) applyTheme();
+
   themeBtn.addEventListener('click', () => {
-    const next = getTheme() === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('lgz-theme', next);
-    updateLabel();
+    userTheme = getTheme() === 'dark' ? 'light' : 'dark';
+    sessionStorage.setItem('theme', userTheme);
+    applyTheme();
   });
-  const saved = localStorage.getItem('lgz-theme');
-  if (saved) { document.documentElement.setAttribute('data-theme', saved); updateLabel(); }
+
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (!userTheme) applyTheme();
+  });
+
   const fadeObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 100); fadeObserver.unobserve(entry.target); }

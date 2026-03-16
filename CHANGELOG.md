@@ -5,6 +5,24 @@ All notable changes to the Low Gravitas Zen theme collection will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-15
+
+### Added
+
+- Shared CSS design system (`low-gravitas-common.css`) for consistent layout across Low Gravitas sites
+- Hub site at `low-gravitas.github.io` with landing page and shared asset hosting
+- Skip-link and brand icon in site nav
+- Responsive breakpoints for swatches and IDE mockup at narrow viewports
+- `repository_dispatch` workflow step to push CSS assets to hub on release
+
+### Changed
+
+- Demo site theme toggle now uses sessionStorage + OS preference (matches font site)
+- Demo site footer unified to `© 2026 Low Gravitas`
+- Demo site CTA order: "Download CSS Tokens" (primary), "View on GitHub"
+- `docs/` directory fully generated — no longer tracked in git
+- Light mode VS Code: accent deepened to purple #5c2d91
+
 ## [1.2.0] - 2026-03-14
 
 ### Added

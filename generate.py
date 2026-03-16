@@ -2426,6 +2426,9 @@ def generate_site():
     shutil.copy2(REPO / "site" / "site.css", docs_dir / "site.css")
     print(f"  wrote docs/site.css")
 
+    shutil.copy2(REPO / "site" / "low-gravitas-common.css", docs_dir / "low-gravitas-common.css")
+    print(f"  wrote docs/low-gravitas-common.css")
+
     return docs_dir / "index.html"
 
 
