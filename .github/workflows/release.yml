@@ -28,10 +28,19 @@ jobs:
           files: low-gravitas-zen.jar
           generate_release_notes: true
 
+      - name: Generate hub token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.HUB_APP_ID }}
+          private-key: ${{ secrets.HUB_APP_PRIVATE_KEY }}
+          owner: low-gravitas
+          repositories: low-gravitas.github.io
+
       - name: Push CSS assets to hub
         run: |
           curl -sX POST \
-            -H "Authorization: token ${{ secrets.HUB_DISPATCH_TOKEN }}" \
+            -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/low-gravitas/low-gravitas.github.io/dispatches \
             -d '{"event_type":"update-zen-css","client_payload":{"sha":"${{ github.sha }}","version":"${{ github.ref_name }}"}}'
