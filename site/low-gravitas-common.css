@@ -34,6 +34,10 @@ main { flex: 1; }
 a { color: var(--link); }
 a:hover { color: var(--accent); }
 
+/* ── Symbol font utility ── */
+
+.lg { font-family: 'LowGravitasSymbols', monospace; }
+
 /* ── Nav ── */
 
 nav {
@@ -64,6 +68,9 @@ nav a {
   transition: color 0.15s;
 }
 nav a:hover { color: var(--link); }
+
+nav a.nav-left { font-size: 1rem; color: var(--text); }
+nav a.nav-left:hover { color: var(--accent); }
 
 #theme-toggle {
   background: none;
