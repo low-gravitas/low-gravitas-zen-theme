@@ -545,6 +545,8 @@ VSCODE_UI_COLORS = OrderedDict([
     ("editorInfo.foreground", "#75beff"),
     ("editorInfo.background", "#4490BF00"),
     ("editorInfo.border", "#4490BF00"),
+    ("editorUnnecessaryCode.opacity", "#000000aa"),
+    ("editorUnnecessaryCode.border", "@cursor"),
     ("editorGutter.background", "@bg_raised"),
     ("editorGutter.modifiedBackground", "#0c7d9d"),
     ("editorGutter.addedBackground", "#587c0c"),

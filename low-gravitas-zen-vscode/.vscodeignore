@@ -2,3 +2,5 @@
 .vscode-test/**
 .gitignore
 vsc-extension-quickstart.md
+demo/**
+low-grav-zen-1080.png
