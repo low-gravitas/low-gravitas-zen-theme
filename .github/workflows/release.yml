@@ -37,6 +37,8 @@ jobs:
             low-gravitas-zen.jar
             docs/low-gravitas-zen.css
             docs/low-gravitas-common.css
+            docs/palette.json
+            docs/code-samples.html
             ghostty/LowGravitasZen
             ghostty/LowGravitasZenLight
             warp/low_gravitas_zen_theme.yaml

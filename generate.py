@@ -2217,6 +2217,59 @@ def generate_css():
     path.write_text(css)
     print(f"  wrote {path.relative_to(REPO)}")
     return path
+
+
+def generate_palette_json():
+    """Generate docs/palette.json — structured palette + token map for downstream consumers.
+
+    Consumed by the lowgravitas.com hub build pipeline (src/_data/palette.js)
+    to render swatches in the theme demo page without re-parsing the CSS output.
+    """
+    dark_pal = load_palette("dark")
+    light_pal = load_palette("light")
+    version = dark_pal["_meta"]["version"]
+
+    with open(PALETTE_PATH, "rb") as f:
+        data = tomllib.load(f)
+    tokens = dict(data.get("tokens", {}))
+    tokens_dark = tokens.pop("dark", {})
+    tokens_light = tokens.pop("light", {})
+
+    def palette_colors(pal):
+        return {
+            k.replace("_", "-"): v
+            for k, v in pal.items()
+            if not k.startswith("_") and isinstance(v, str) and v.startswith("#")
+        }
+
+    def token_map(base, overrides):
+        merged = {**base, **overrides}
+        return {
+            k.replace("_", "-"): v.replace("_", "-")
+            for k, v in merged.items()
+        }
+
+    payload = {
+        "version": version,
+        "generated_from": "palette.toml",
+        "dark": {
+            "palette": palette_colors(dark_pal),
+            "tokens": token_map(tokens, tokens_dark),
+        },
+        "light": {
+            "palette": palette_colors(light_pal),
+            "tokens": token_map(tokens, tokens_light),
+        },
+    }
+
+    docs_dir = REPO / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    path = docs_dir / "palette.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    print(f"  wrote {path.relative_to(REPO)}")
+    return path
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Demo site
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2437,6 +2490,22 @@ def generate_site():
     (docs_dir / "index.html").write_text(html)
     print(f"  wrote docs/index.html")
 
+    # ── Emit pre-colorized code samples as a standalone release artifact ──
+    # Consumed by the lowgravitas.com hub build (src/_data/codeSamples.js)
+    # and injected verbatim into the theme demo page. Each sample's HTML is
+    # already escaped by the colorizer's _esc() helper above, so it's safe
+    # to inject via Nunjucks `| safe` without XSS risk.
+    code_samples = (
+        f'<!-- Low Gravitas Zen v{version} — pre-colorized code samples\n'
+        f'     GENERATED from palette.toml — do not edit by hand. -->\n'
+        f'<div class="lgz-code-samples" data-version="{version}">\n'
+        f'  <pre class="lgz-code-sample lgz-code-sample--python"><code>{python_html}</code></pre>\n'
+        f'  <pre class="lgz-code-sample lgz-code-sample--js"><code>{js_html}</code></pre>\n'
+        f'</div>\n'
+    )
+    (docs_dir / "code-samples.html").write_text(code_samples)
+    print(f"  wrote docs/code-samples.html")
+
     shutil.copy2(REPO / "site" / "site.css", docs_dir / "site.css")
     print(f"  wrote docs/site.css")
 
@@ -2492,6 +2561,7 @@ def main():
     if args.site:
         generate_site()
         generate_css()
+        generate_palette_json()
         return 0
 
     variants = ["dark", "light"] if args.variant == "all" else [args.variant]
