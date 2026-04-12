@@ -2267,13 +2267,12 @@ def generate_palette_json():
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Release artifacts (code-samples.html, low-gravitas-common.css)
+# Release artifacts (code-samples.html)
 # ══════════════════════════════════════════════════════════════════════════════
 
 def generate_code_samples():
     """Generate dist/code-samples.html — pre-colorized code samples for the hub."""
     import re as _re
-    import shutil
 
     dark_pal = load_palette("dark")
     version = dark_pal["_meta"]["version"]
@@ -2445,9 +2444,6 @@ def generate_code_samples():
     )
     (dist_dir / "code-samples.html").write_text(code_samples)
     print(f"  wrote dist/code-samples.html")
-
-    shutil.copy2(REPO / "site" / "low-gravitas-common.css", dist_dir / "low-gravitas-common.css")
-    print(f"  wrote dist/low-gravitas-common.css")
 
     return dist_dir / "code-samples.html"
 

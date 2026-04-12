@@ -36,7 +36,6 @@ jobs:
           files: |
             low-gravitas-zen.jar
             dist/low-gravitas-zen.css
-            dist/low-gravitas-common.css
             dist/palette.json
             dist/code-samples.html
             ghostty/LowGravitasZen
