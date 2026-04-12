@@ -27,18 +27,18 @@ jobs:
           echo "Built low-gravitas-zen.jar"
           jar tf low-gravitas-zen.jar
 
-      - name: Generate site CSS
-        run: python3 generate.py --site
+      - name: Generate release artifacts
+        run: python3 generate.py --artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             low-gravitas-zen.jar
-            docs/low-gravitas-zen.css
-            docs/low-gravitas-common.css
-            docs/palette.json
-            docs/code-samples.html
+            dist/low-gravitas-zen.css
+            dist/low-gravitas-common.css
+            dist/palette.json
+            dist/code-samples.html
             ghostty/LowGravitasZen
             ghostty/LowGravitasZenLight
             warp/low_gravitas_zen_theme.yaml
@@ -46,20 +46,3 @@ jobs:
             iTerm2/LowGravitasZen.itermcolors
             iTerm2/LowGravitasZenLight.itermcolors
           generate_release_notes: true
-
-      - name: Generate hub token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.HUB_APP_ID }}
-          private-key: ${{ secrets.HUB_APP_PRIVATE_KEY }}
-          owner: low-gravitas
-          repositories: low-gravitas.github.io
-
-      - name: Push CSS assets to hub
-        run: |
-          curl -sX POST \
-            -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/low-gravitas/low-gravitas.github.io/dispatches \
-            -d '{"event_type":"update-zen-css","client_payload":{"sha":"${{ github.sha }}","version":"${{ github.ref_name }}"}}'

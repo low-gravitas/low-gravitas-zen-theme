@@ -8,7 +8,7 @@ Usage:
     python3 generate.py --check             # Verify generated files match committed
     python3 generate.py --seed-light        # Print HSLuv-inverted light palette candidates
     python3 generate.py --bootstrap         # Extract theme data from existing files (dev tool)
-    python3 generate.py --site              # Generate demo site at docs/index.html
+    python3 generate.py --artifacts          # Generate release artifacts (CSS, palette.json, code-samples.html) into dist/
 """
 
 import argparse
@@ -2088,7 +2088,7 @@ def seed_light():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def generate_css():
-    """Generate docs/low-gravitas-zen.css — standalone color tokens for web."""
+    """Generate dist/low-gravitas-zen.css — standalone color tokens for web."""
     dark_pal = load_palette("dark")
     light_pal = load_palette("light")
     version = dark_pal["_meta"]["version"]
@@ -2211,20 +2211,16 @@ def generate_css():
 }}
 """
 
-    docs_dir = REPO / "docs"
-    docs_dir.mkdir(exist_ok=True)
-    path = docs_dir / "low-gravitas-zen.css"
+    dist_dir = REPO / "dist"
+    dist_dir.mkdir(exist_ok=True)
+    path = dist_dir / "low-gravitas-zen.css"
     path.write_text(css)
     print(f"  wrote {path.relative_to(REPO)}")
     return path
 
 
 def generate_palette_json():
-    """Generate docs/palette.json — structured palette + token map for downstream consumers.
-
-    Consumed by the lowgravitas.com hub build pipeline (src/_data/palette.js)
-    to render swatches in the theme demo page without re-parsing the CSS output.
-    """
+    """Generate dist/palette.json — structured palette + token map for downstream consumers."""
     dark_pal = load_palette("dark")
     light_pal = load_palette("light")
     version = dark_pal["_meta"]["version"]
@@ -2262,32 +2258,25 @@ def generate_palette_json():
         },
     }
 
-    docs_dir = REPO / "docs"
-    docs_dir.mkdir(exist_ok=True)
-    path = docs_dir / "palette.json"
+    dist_dir = REPO / "dist"
+    dist_dir.mkdir(exist_ok=True)
+    path = dist_dir / "palette.json"
     path.write_text(json.dumps(payload, indent=2) + "\n")
     print(f"  wrote {path.relative_to(REPO)}")
     return path
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Demo site
+# Release artifacts (code-samples.html, low-gravitas-common.css)
 # ══════════════════════════════════════════════════════════════════════════════
 
-def generate_site():
-    """Generate docs/index.html from site/ templates + colorized code samples."""
+def generate_code_samples():
+    """Generate dist/code-samples.html — pre-colorized code samples for the hub."""
     import re as _re
     import shutil
 
     dark_pal = load_palette("dark")
-    try:
-        light_pal = load_palette("light")
-    except Exception:
-        light_pal = dark_pal
-
     version = dark_pal["_meta"]["version"]
-
-    # ── Token-based colorizer ────────────────────────────────────────────
 
     _TOK_PATTERN = _re.compile(
         r'("""[\s\S]*?"""|'
@@ -2405,16 +2394,6 @@ def generate_site():
             result.append(f'<span{cls}><span class="line-num">{i:>2}</span>{content}</span>')
         return "\n".join(result)
 
-    def _label_color_for_swatch(swatch_hex):
-        r, g, b = hex_to_rgb(swatch_hex)
-        def lin(c): return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-        lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
-        cr_white = 1.05 / (lum + 0.05)
-        cr_black = (lum + 0.05) / 0.05
-        return "#ffffff" if cr_white > cr_black else "#000000"
-
-    # ── Code samples ─────────────────────────────────────────────────────
-
     python_sample = (
         'def fibonacci(n: int) -> list[int]:\n'
         '    """Generate Fibonacci sequence up to n terms."""\n'
@@ -2450,51 +2429,12 @@ def generate_site():
         '}'
     )
 
-    # ── Generate swatches ────────────────────────────────────────────────
-
-    swatch_names = [
-        "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
-        "bright-black", "bright-red", "bright-green", "bright-yellow",
-        "bright-blue", "bright-magenta", "bright-cyan", "bright-white",
-        "bg-deep", "bg-mid", "bg-raised", "selection", "cursor", "accent",
-    ]
-    swatch_lines = []
-    for name in swatch_names:
-        pal_key = name.replace("-", "_")
-        dark_hex = dark_pal.get(pal_key, "#888888")
-        light_hex = light_pal.get(pal_key, dark_hex)
-        dark_label = _label_color_for_swatch(dark_hex)
-        light_label = _label_color_for_swatch(light_hex)
-        swatch_lines.append(
-            f'<div class="swatch" style="background: var(--lgz-{name}); '
-            f'--label-dark: {dark_label}; --label-light: {light_label};" '
-            f'data-dark="{dark_hex}" data-light="{light_hex}">'
-            f'<span>{name}</span></div>'
-        )
-
-    # ── Assemble from templates ──────────────────────────────────────────
-
     python_html = _add_selection_and_cursor(colorize_python(python_sample))
     js_html = _add_line_numbers(colorize_js(js_sample))
 
-    template = (REPO / "site" / "site.html").read_text()
-    html = (template
-        .replace("{{swatches}}", "\n".join(swatch_lines))
-        .replace("{{python_code}}", python_html)
-        .replace("{{js_code}}", js_html)
-        .replace("{{version}}", version)
-    )
+    dist_dir = REPO / "dist"
+    dist_dir.mkdir(exist_ok=True)
 
-    docs_dir = REPO / "docs"
-    docs_dir.mkdir(exist_ok=True)
-    (docs_dir / "index.html").write_text(html)
-    print(f"  wrote docs/index.html")
-
-    # ── Emit pre-colorized code samples as a standalone release artifact ──
-    # Consumed by the lowgravitas.com hub build (src/_data/codeSamples.js)
-    # and injected verbatim into the theme demo page. Each sample's HTML is
-    # already escaped by the colorizer's _esc() helper above, so it's safe
-    # to inject via Nunjucks `| safe` without XSS risk.
     code_samples = (
         f'<!-- Low Gravitas Zen v{version} — pre-colorized code samples\n'
         f'     GENERATED from palette.toml — do not edit by hand. -->\n'
@@ -2503,17 +2443,13 @@ def generate_site():
         f'  <pre class="lgz-code-sample lgz-code-sample--js"><code>{js_html}</code></pre>\n'
         f'</div>\n'
     )
-    (docs_dir / "code-samples.html").write_text(code_samples)
-    print(f"  wrote docs/code-samples.html")
+    (dist_dir / "code-samples.html").write_text(code_samples)
+    print(f"  wrote dist/code-samples.html")
 
-    shutil.copy2(REPO / "site" / "site.css", docs_dir / "site.css")
-    print(f"  wrote docs/site.css")
+    shutil.copy2(REPO / "site" / "low-gravitas-common.css", dist_dir / "low-gravitas-common.css")
+    print(f"  wrote dist/low-gravitas-common.css")
 
-    shutil.copy2(REPO / "site" / "low-gravitas-common.css", docs_dir / "low-gravitas-common.css")
-    print(f"  wrote docs/low-gravitas-common.css")
-
-    return docs_dir / "index.html"
-
+    return dist_dir / "code-samples.html"
 
 
 
@@ -2543,8 +2479,8 @@ def main():
                         help="Print HSLuv-inverted light palette candidates")
     parser.add_argument("--bootstrap", action="store_true",
                         help="Extract theme data from existing files (dev tool)")
-    parser.add_argument("--site", action="store_true",
-                        help="Generate demo site at docs/index.html")
+    parser.add_argument("--artifacts", action="store_true",
+                        help="Generate release artifacts (CSS, palette.json, code-samples) into dist/")
     args = parser.parse_args()
 
     if args.bootstrap:
@@ -2558,10 +2494,10 @@ def main():
     if args.check:
         return check_mode()
 
-    if args.site:
-        generate_site()
+    if args.artifacts:
         generate_css()
         generate_palette_json()
+        generate_code_samples()
         return 0
 
     variants = ["dark", "light"] if args.variant == "all" else [args.variant]

@@ -15,7 +15,8 @@ Low Gravitas Zen is a collection of dark and light color themes designed for hig
 - **`iTerm2/`** — `.itermcolors` plist files (dark + light).
 - **`warp/`** — YAML theme files (dark + light).
 - **`ghostty/`** — Ghostty config-format theme files (dark + light).
-- **`docs/`** — Demo site (`index.html`), deployed to GitHub Pages.
+- **`site/`** — Source templates for CSS and code-sample assets (consumed by the hub repo).
+- **`dist/`** — Generated release artifacts (gitignored). Built by `python3 generate.py --artifacts`.
 
 ## Theme Generation
 
@@ -32,7 +33,7 @@ python3 generate.py --variant dark      # Dark only
 python3 generate.py --editor vscode     # VS Code only
 python3 generate.py --check             # Verify generated files match committed
 python3 generate.py --seed-light        # Print light palette candidates
-python3 generate.py --site              # Generate demo site
+python3 generate.py --artifacts          # Generate release artifacts (CSS, palette.json, code-samples) into dist/
 ```
 
 ## Versioning
@@ -54,4 +55,4 @@ Then run `python3 generate.py` to update version headers in generated files.
 
 ## Releases
 
-Releases are created as GitHub tags. The GitHub Actions workflow builds the IntelliJ `.jar` plugin and attaches it to the release as an asset. A separate Pages workflow deploys the demo site on push to `main`.
+Releases are created as GitHub tags. The GitHub Actions workflow builds the IntelliJ `.jar` plugin, generates release artifacts into `dist/`, and attaches everything to the release. The demo site lives in the hub repo (low-gravitas.github.io) and fetches these artifacts.
