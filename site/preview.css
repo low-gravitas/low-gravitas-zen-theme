@@ -1,22 +1,8 @@
-/* Low Gravitas — shared layout CSS
+/* Low Gravitas Zen — local preview shell
+   Minimal layout for the theme demo page. Not used by the hub site.
    Color variables come from low-gravitas-zen.css (linked separately). */
 
-/* ── Reset ── */
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* ── Bridge variables ── */
-
-:root {
-  --glow: rgba(128, 64, 208, 0.4);
-  --accent-hover: var(--lgz-bright-blue);
-  --shadow-alpha: 0.4;
-}
-[data-theme="light"] {
-  --glow: rgba(128, 64, 208, 0.3);
-}
-
-/* ── Body ── */
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -29,12 +15,8 @@ body {
 
 main { flex: 1; }
 
-/* ── Links ── */
-
 a { color: var(--link); }
 a:hover { color: var(--accent); }
-
-/* ── Symbol font utility ── */
 
 .lg { font-family: 'LowGravitasSymbols', monospace; }
 
@@ -65,10 +47,8 @@ nav a {
   text-decoration: none;
   font-size: 14px;
   padding: 4px 2px;
-  transition: color 0.15s;
 }
 nav a:hover { color: var(--link); }
-
 nav a.nav-left { font-size: 1rem; color: var(--text); }
 nav a.nav-left:hover { color: var(--accent); }
 
@@ -78,7 +58,6 @@ nav a.nav-left:hover { color: var(--accent); }
   border-radius: 6px;
   cursor: pointer;
   color: var(--text);
-  transition: border-color 0.15s;
   font-family: 'LowGravitasSymbols', monospace;
   font-size: 16px;
   line-height: 1;
@@ -87,7 +66,6 @@ nav a.nav-left:hover { color: var(--accent); }
   min-height: 36px;
 }
 #theme-toggle:hover { border-color: var(--accent); }
-#theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── Buttons ── */
 
@@ -100,25 +78,17 @@ nav a.nav-left:hover { color: var(--accent); }
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
   cursor: pointer;
   border: 1px solid var(--border);
   color: var(--text);
   background: var(--surface);
 }
-.btn:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 14px var(--glow);
-}
-.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn:hover { border-color: var(--accent); }
 
 .btn.primary {
   background: var(--accent);
   color: var(--text-on-accent);
   border-color: var(--accent);
-}
-.btn.primary:hover {
-  box-shadow: 0 0 18px var(--glow);
 }
 
 /* ── Footer ── */
@@ -133,19 +103,7 @@ footer {
 footer a { color: var(--text-dim); text-decoration: none; }
 footer a:hover { color: var(--link); }
 
-/* ── Accessibility ── */
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+/* ── Utilities ── */
 
 .skip-link {
   position: absolute;
@@ -157,42 +115,18 @@ footer a:hover { color: var(--link); }
   z-index: 100;
   text-decoration: none;
   font-size: 14px;
-  transition: top 0.15s;
 }
 .skip-link:focus { top: 0; }
 
-/* ── Animations ── */
-
-.fade-in {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
+.fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
 .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
 
 @media (prefers-reduced-motion: reduce) {
   .fade-in { opacity: 1; transform: none; transition: none; }
-  .btn { transition: none; }
-  .skip-link { transition: none; }
-  nav a { transition: none; }
-  #theme-toggle { transition: none; }
 }
-
-/* ── Selection ── */
-
-::selection {
-  background: var(--selection-bg);
-  color: var(--selection-fg);
-}
-
-/* ── Responsive nav ── */
 
 @media (max-width: 640px) {
-  nav {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  nav a {
-    padding: 8px 4px;
-  }
+  nav { flex-wrap: wrap; gap: 8px; }
 }
