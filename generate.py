@@ -1913,117 +1913,85 @@ def bootstrap():
 def check_mode():
     """Verify generated files match committed versions."""
     import subprocess
-    import tempfile
-    import shutil
+    import xml.etree.ElementTree as ET
 
     print("Checking generated files against committed versions...")
     errors = []
 
-    # Generate all dark themes to a temp dir, then compare
-    tmpdir = Path(tempfile.mkdtemp())
-    try:
-        pal = load_palette("dark")
-
-        # Generate all dark themes into temp copies
-        # We generate in-place and compare with git, then restore
-        # Actually, let's just generate and compare with git show
-
-        # JSON files: compare parsed
-        json_checks = [
-            ("VS Code dark", "vscode", "dark",
-             "low-gravitas-theme-vscode/themes/Low Gravitas-color-theme.json"),
-            ("IntelliJ theme", "intellij-theme", "dark",
-             "intellij/resources/lowgravitas.theme.json"),
-        ]
-
-        for label, editor, variant, relpath in json_checks:
-            gen_func = EDITORS[editor]
-            gen_func(pal, variant)
-
-            filepath = REPO / relpath
-            with open(filepath) as f:
-                generated = json.load(f)
-
-            result = subprocess.run(
-                ["git", "show", f"HEAD:{relpath}"],
-                capture_output=True, text=True, cwd=REPO
-            )
-            if result.returncode != 0:
-                print(f"  SKIP {label} (not in git)")
-                continue
-
-            committed = json.loads(result.stdout)
-            if generated == committed:
-                print(f"  OK: {label}")
-            else:
-                errors.append(f"{label} differs from committed version")
-
-        # XML: compare via parsed structure
-        import xml.etree.ElementTree as ET
-        generate_intellij_scheme(pal, "dark")
-        xml_path = "intellij/resources/low_gravitas.xml"
-        gen_tree = ET.parse(REPO / xml_path)
-        gen_root = gen_tree.getroot()
-
+    def git_show(relpath):
         result = subprocess.run(
-            ["git", "show", f"HEAD:{xml_path}"],
+            ["git", "show", f"HEAD:{relpath}"],
             capture_output=True, text=True, cwd=REPO
         )
-        if result.returncode == 0:
-            com_root = ET.fromstring(result.stdout)
-            # Compare attributes
-            gen_attrs = {}
-            for opt in gen_root.find("attributes").findall("option"):
-                val = opt.find("value")
-                if val is not None:
-                    gen_attrs[opt.get("name")] = {
-                        p.get("name"): p.get("value") for p in val.findall("option")
-                    }
-            com_attrs = {}
-            for opt in com_root.find("attributes").findall("option"):
-                val = opt.find("value")
-                if val is not None:
-                    com_attrs[opt.get("name")] = {
-                        p.get("name"): p.get("value") for p in val.findall("option")
-                    }
-            if gen_attrs == com_attrs:
-                print("  OK: IntelliJ XML scheme")
-            else:
-                errors.append("IntelliJ XML scheme differs")
+        return result.stdout if result.returncode == 0 else None
 
-        # Text files: compare ignoring GENERATED header
-        text_checks = [
-            ("Ghostty dark", "ghostty", "dark", "ghostty/LowGravitas"),
-            ("Warp dark", "warp", "dark", "warp/low_gravitas_theme.yaml"),
-        ]
+    def check_json(label, editor, variant, relpath):
+        pal = load_palette(variant)
+        EDITORS[editor](pal, variant)
+        with open(REPO / relpath) as f:
+            generated = json.load(f)
+        committed_text = git_show(relpath)
+        if committed_text is None:
+            print(f"  SKIP {label} (not in git)")
+            return
+        if generated == json.loads(committed_text):
+            print(f"  OK: {label}")
+        else:
+            errors.append(f"{label} differs from committed version")
 
-        for label, editor, variant, relpath in text_checks:
-            gen_func = EDITORS[editor]
-            gen_func(pal, variant)
+    def check_intellij_xml(label, variant, relpath):
+        pal = load_palette(variant)
+        generate_intellij_scheme(pal, variant)
+        committed_text = git_show(relpath)
+        if committed_text is None:
+            print(f"  SKIP {label} (not in git)")
+            return
+        gen_root = ET.parse(REPO / relpath).getroot()
+        com_root = ET.fromstring(committed_text)
+        def attrs(root):
+            return {
+                opt.get("name"): {p.get("name"): p.get("value") for p in opt.find("value").findall("option")}
+                for opt in root.find("attributes").findall("option")
+                if opt.find("value") is not None
+            }
+        if attrs(gen_root) == attrs(com_root):
+            print(f"  OK: {label}")
+        else:
+            errors.append(f"{label} differs from committed version")
 
-            filepath = REPO / relpath
-            with open(filepath) as f:
-                gen_lines = f.readlines()
+    def check_text(label, editor, variant, relpath):
+        pal = load_palette(variant)
+        EDITORS[editor](pal, variant)
+        with open(REPO / relpath) as f:
+            gen_lines = f.readlines()
+        committed_text = git_show(relpath)
+        if committed_text is None:
+            print(f"  SKIP {label} (not in git)")
+            return
+        com_lines = committed_text.splitlines(keepends=True)
+        strip = lambda lines: [l for l in lines if GENERATED_HEADER_HASH not in l]
+        if strip(gen_lines) == strip(com_lines):
+            print(f"  OK: {label}")
+        else:
+            errors.append(f"{label} differs from committed version")
 
-            result = subprocess.run(
-                ["git", "show", f"HEAD:{relpath}"],
-                capture_output=True, text=True, cwd=REPO
-            )
-            if result.returncode != 0:
-                print(f"  SKIP {label} (not in git)")
-                continue
+    # JSON checks
+    check_json("VS Code dark",         "vscode",          "dark",  "low-gravitas-theme-vscode/themes/Low Gravitas-color-theme.json")
+    check_json("VS Code light",        "vscode",          "light", "low-gravitas-theme-vscode/themes/Low Gravitas Light-color-theme.json")
+    check_json("IntelliJ theme dark",  "intellij-theme",  "dark",  "intellij/resources/lowgravitas.theme.json")
+    check_json("IntelliJ theme light", "intellij-theme",  "light", "intellij/resources/lowgravitaslight.theme.json")
 
-            com_lines = result.stdout.splitlines(keepends=True)
-            # Filter out GENERATED header from both sides
-            gen_filtered = [l for l in gen_lines if GENERATED_HEADER_HASH not in l]
-            com_filtered = [l for l in com_lines if GENERATED_HEADER_HASH not in l]
-            if gen_filtered == com_filtered:
-                print(f"  OK: {label}")
-            else:
-                errors.append(f"{label} differs (ignoring GENERATED header)")
+    # IntelliJ XML scheme checks
+    check_intellij_xml("IntelliJ scheme dark",  "dark",  "intellij/resources/low_gravitas.xml")
+    check_intellij_xml("IntelliJ scheme light", "light", "intellij/resources/low_gravitas_light.xml")
 
-    finally:
-        shutil.rmtree(tmpdir, ignore_errors=True)
+    # Text checks (Ghostty, Warp, iTerm2)
+    check_text("Ghostty dark",   "ghostty", "dark",  "ghostty/LowGravitas")
+    check_text("Ghostty light",  "ghostty", "light", "ghostty/LowGravitasLight")
+    check_text("Warp dark",      "warp",    "dark",  "warp/low_gravitas_theme.yaml")
+    check_text("Warp light",     "warp",    "light", "warp/low_gravitas_light_theme.yaml")
+    check_text("iTerm2 dark",    "iterm",   "dark",  "iTerm2/LowGravitas.itermcolors")
+    check_text("iTerm2 light",   "iterm",   "light", "iTerm2/LowGravitasLight.itermcolors")
 
     if errors:
         print(f"\n{len(errors)} mismatch(es) found:")
