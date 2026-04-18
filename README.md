@@ -57,3 +57,12 @@ Download `low_gravitas_theme.yaml` (or `low_gravitas_light_theme.yaml`) from the
 1. Copy it to `~/.warp/themes` on macOS or `${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal/themes/` on Linux.
 2. Open Warp preferences (Cmd+,) > Appearance > Current Theme.
 3. Select "Low Gravitas" from the list.
+
+Integration assets
+------------------
+
+Each release also includes assets for integrating the palette into other tools or sites:
+
+- **`palette.json`** — All palette colors as a machine-readable JSON file. Useful for generating themes for editors or tools not listed above.
+- **`low-gravitas.css`** — Prebuilt CSS stylesheet with color variables for both dark and light variants. Drop it in to style a web page with the Low Gravitas palette.
+- **`code-samples.html`** — Pre-rendered syntax-highlighted code snippets in both variants, used by the [Low Gravitas site](https://low-gravitas.github.io) for previews.
