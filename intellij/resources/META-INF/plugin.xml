@@ -1,12 +1,12 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.lowgravitas.low-gravitas-zen</id>
-    <version>1.3.1</version>
+    <id>com.lowgravitas.low-gravitas-theme</id>
+    <version>2.0.0</version>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>Low Gravitas Zen</name>
+    <name>Low Gravitas</name>
     <category>UI</category>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
@@ -38,6 +38,7 @@
          Displayed on the Plugin Page and IDE Plugin Manager. Simple HTML elements can be included between <![CDATA[  ]]> tags. -->
     <change-notes><![CDATA[
     <ul>
+        <li>2.0.0  Renamed from Low Gravitas Zen. The palette originally derived from Zenburn but has diverged significantly.</li>
         <li>1.2.0  Add light mode variant. All themes now generated from palette.toml.</li>
         <li>1.1.0  Update version compatibility through 2025.3. Add Islands theme support. Sync console colors with unified palette.</li>
         <li>1.0.1  Update version compatibility.</li>
@@ -50,7 +51,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <themeProvider id="low-gravitas-zen" path="/lowgravitaszen.theme.json"/>
-        <themeProvider id="low-gravitas-zen-light" path="/lowgravitaszenlight.theme.json"/>
+        <themeProvider id="low-gravitas-theme" path="/lowgravitas.theme.json"/>
+        <themeProvider id="low-gravitas-theme-light" path="/lowgravitaslight.theme.json"/>
     </extensions>
 </idea-plugin>

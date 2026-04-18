@@ -1,9 +1,9 @@
-# Low Gravitas Zen — palette source of truth
+# Low Gravitas — palette source of truth
 # Edit this file, then run: python3 generate.py
 
 [meta]
-name = "Low Gravitas Zen"
-version = "1.3.1"
+name = "Low Gravitas"
+version = "2.0.0"
 
 # ── 16 ANSI colors ──────────────────────────────────────────────────────────
 [base]
@@ -84,7 +84,7 @@ pure_white = "#000000"
 
 # ── Semantic design tokens ─────────────────────────────────────────────────
 # Maps palette keys to purpose-based CSS variable names for web consumers.
-# These become unprefixed vars (--bg, --text, etc.) in low-gravitas-zen.css.
+# These become unprefixed vars (--bg, --text, etc.) in low-gravitas.css.
 [tokens]
 bg               = "bg_deep"
 surface          = "bg_mid"

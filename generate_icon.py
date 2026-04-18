@@ -1,15 +1,15 @@
 """Generate the VS Code extension marketplace icon.
 
 Recolors the Low Gravitas astronaut head (source lives outside this repo at
-`../low-grav-head-1080.png`) to match the Low Gravitas Zen theme palette and
+`../low-grav-head-1080.png`) to match the Low Gravitas theme palette and
 composites it onto a rounded square tile with a bg_raised border.
 
 Run from repo root:
     python3 generate_icon.py
 
 Outputs:
-    low-gravitas-zen-vscode/low-grav-zen.png       (256x256, marketplace icon)
-    low-gravitas-zen-vscode/low-grav-zen-1080.png  (1080x1080, high-res source)
+    low-gravitas-theme-vscode/low-grav.png       (256x256, marketplace icon)
+    low-gravitas-theme-vscode/low-grav-1080.png  (1080x1080, high-res source)
 
 Requires: Pillow (PIL).
 """
@@ -27,9 +27,9 @@ THEME_BLUE = (0x55, 0x80, 0xaa)  # base blue from palette
 
 REPO_ROOT = Path(__file__).parent
 DEFAULT_SRC = REPO_ROOT.parent / "low-grav-head-1080.png"
-OUT_DIR = REPO_ROOT / "low-gravitas-zen-vscode"
-OUT_256 = OUT_DIR / "low-grav-zen.png"
-OUT_1080 = OUT_DIR / "low-grav-zen-1080.png"
+OUT_DIR = REPO_ROOT / "low-gravitas-theme-vscode"
+OUT_256 = OUT_DIR / "low-grav.png"
+OUT_1080 = OUT_DIR / "low-grav-1080.png"
 
 
 def rgb_to_hsv(r, g, b):
@@ -50,7 +50,7 @@ def recolor_astronaut(img):
       - White/gray helmet rim (~#cccccc) with shading
       - Transparent background
 
-    Output palette (tuned to Low Gravitas Zen):
+    Output palette (tuned to Low Gravitas):
       - Helmet interior → theme base blue #5580aa, gradient preserved
       - Face → desaturated toward theme accent #ffff86, hue variation kept
         so edges still read warmer/orange

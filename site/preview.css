@@ -1,6 +1,6 @@
-/* Low Gravitas Zen — local preview shell
+/* Low Gravitas — local preview shell
    Minimal layout for the theme demo page. Not used by the hub site.
-   Color variables come from low-gravitas-zen.css (linked separately). */
+   Color variables come from low-gravitas.css (linked separately). */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

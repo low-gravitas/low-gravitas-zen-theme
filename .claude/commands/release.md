@@ -1,8 +1,8 @@
 ---
-description: "Release a new version of the Zen theme — regenerate themes, bump versions, update changelogs, tag, verify, and update the hub"
+description: "Release a new version of the theme — regenerate themes, bump versions, update changelogs, tag, verify, and update the hub"
 ---
 
-# Release Process for Low Gravitas Zen Theme
+# Release Process for Low Gravitas Theme
 
 Ask the user for the new version number (e.g. "1.4.0") and a summary of what changed. Store these as $VERSION and $CHANGES for use throughout.
 
@@ -29,7 +29,7 @@ python3 generate.py --artifacts
 ```
 
 Verify the `dist/` directory contains these three files:
-- `dist/low-gravitas-zen.css`
+- `dist/low-gravitas.css`
 - `dist/palette.json`
 - `dist/code-samples.html`
 
@@ -40,7 +40,7 @@ List the directory contents to confirm. If any are missing, stop and investigate
 Update the version string in each of these files:
 
 1. **`palette.toml`** — in the `[meta]` section, update `version = "$VERSION"`
-2. **`low-gravitas-zen-vscode/package.json`** — update the `"version"` field to `"$VERSION"`
+2. **`low-gravitas-theme-vscode/package.json`** — update the `"version"` field to `"$VERSION"`
 3. **`intellij/resources/META-INF/plugin.xml`** — update the `<version>` element to `<version>$VERSION</version>`
 
 After updating all three, re-run the generator so version headers in generated files are updated:
@@ -62,7 +62,7 @@ Add a new section at the top of both changelog files, following the Keep a Chang
 - (description of changes)
 ```
 
-**`low-gravitas-zen-vscode/CHANGELOG.md`** — add the same section, tailored to VS Code if needed.
+**`low-gravitas-theme-vscode/CHANGELOG.md`** — add the same section, tailored to VS Code if needed.
 
 Use Added/Changed/Fixed/Removed subsections as appropriate for the changes.
 
@@ -115,10 +115,10 @@ gh release view v$VERSION --json assets -q '.assets[].name'
 ```
 
 Confirm these assets are present:
-- `low-gravitas-zen.css`
+- `low-gravitas.css`
 - `palette.json`
 - `code-samples.html`
-- `low-gravitas-zen.jar`
+- `low-gravitas.jar`
 - Ghostty, iTerm2, and Warp theme files
 
 Report any missing assets to the user.
@@ -128,7 +128,7 @@ Report any missing assets to the user.
 Remind the user to update the hub repo with this command:
 
 ```
-cd /Users/mike/Code/lowgravitas/low-gravitas.github.io && node scripts/bump-upstream.mjs --zen=v$VERSION
+cd /Users/mike/Code/lowgravitas/low-gravitas.github.io && node scripts/bump-upstream.mjs --theme=v$VERSION
 ```
 
 Then commit and push the updated `artifacts.json` and `artifacts.lock.json` in that repo.

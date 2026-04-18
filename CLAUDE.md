@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Low Gravitas Zen is a collection of dark and light color themes designed for high contrast and reduced blue light. The palette originally derived from Zenburn but has diverged significantly. Themes exist for multiple editors and terminals, all generated from a single palette source of truth.
+Low Gravitas is a collection of dark and light color themes designed for high contrast and reduced blue light. The palette originally derived from Zenburn but has diverged significantly. Themes exist for multiple editors and terminals, all generated from a single palette source of truth.
 
 ## Repository Structure
 
 - **`palette.toml`** — Single source of truth for all colors. Edit this to change any color.
 - **`generate.py`** — Generates all theme files from `palette.toml`. Run `python3 generate.py` to regenerate.
-- **`low-gravitas-zen-vscode/`** — VS Code extension (`package.json` + `themes/*.json`). Version in `package.json`.
+- **`low-gravitas-theme-vscode/`** — VS Code extension (`package.json` + `themes/*.json`). Version in `package.json`.
 - **`intellij/`** — IntelliJ plugin (`plugin.xml` + theme JSON + color scheme XML). Version in `plugin.xml`. Built via GitHub Actions into a `.jar` on release.
 - **`iTerm2/`** — `.itermcolors` plist files (dark + light).
 - **`warp/`** — YAML theme files (dark + light).
@@ -39,10 +39,10 @@ python3 generate.py --artifacts          # Generate release artifacts (CSS, pale
 ## Versioning
 
 All themes share a single version number defined in `palette.toml` `[meta]` section. When bumping, also update:
-- `low-gravitas-zen-vscode/package.json` (`version` field)
+- `low-gravitas-theme-vscode/package.json` (`version` field)
 - `intellij/resources/META-INF/plugin.xml` (`<version>` element)
 - `CHANGELOG.md` (root)
-- `low-gravitas-zen-vscode/CHANGELOG.md`
+- `low-gravitas-theme-vscode/CHANGELOG.md`
 
 Then run `python3 generate.py` to update version headers in generated files.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Low Gravitas Zen themes from palette.toml.
+"""Generate Low Gravitas themes from palette.toml.
 
 Usage:
     python3 generate.py                     # Generate all themes, both variants
@@ -1572,7 +1572,7 @@ def generate_ghostty(palette, variant):
     lines.append("")
 
     suffix = "Light" if variant == "light" else ""
-    path = REPO / "ghostty" / f"LowGravitasZen{suffix}"
+    path = REPO / "ghostty" / f"LowGravitas{suffix}"
     path.write_text("\n".join(lines))
     print(f"  wrote {path.relative_to(REPO)}")
     return path
@@ -1587,7 +1587,7 @@ def generate_warp(palette, variant):
     suffix = "_light" if variant == "light" else ""
 
     lines = [
-        f"# Low Gravitas Zen{variant_label} v{version}",
+        f"# Low Gravitas{variant_label} v{version}",
         GENERATED_HEADER_HASH,
         f'accent: "{p["accent"]}"',
         f'background: "{p["bg_deep"]}"',
@@ -1615,7 +1615,7 @@ def generate_warp(palette, variant):
         "",
     ]
 
-    path = REPO / "warp" / f"low_gravitas_zen{suffix}_theme.yaml"
+    path = REPO / "warp" / f"low_gravitas{suffix}_theme.yaml"
     path.write_text("\n".join(lines))
     print(f"  wrote {path.relative_to(REPO)}")
     return path
@@ -1685,7 +1685,7 @@ def generate_iterm(palette, variant):
         '</plist>\n'
     )
 
-    path = REPO / "iTerm2" / f"LowGravitasZen{suffix}.itermcolors"
+    path = REPO / "iTerm2" / f"LowGravitas{suffix}.itermcolors"
     path.write_text(content)
     print(f"  wrote {path.relative_to(REPO)}")
     return path
@@ -1699,7 +1699,7 @@ def generate_vscode(palette, variant):
 
     # Build theme structure
     theme = OrderedDict()
-    theme["name"] = f"Low Gravitas Zen{variant_label}"
+    theme["name"] = f"Low Gravitas{variant_label}"
     theme["type"] = theme_type
     theme["semanticHighlighting"] = True
 
@@ -1739,8 +1739,8 @@ def generate_vscode(palette, variant):
     content += "\n"
 
     suffix = " Light" if variant == "light" else ""
-    filename = f"Low Gravitas Zen{suffix}-color-theme.json"
-    path = REPO / "low-gravitas-zen-vscode" / "themes" / filename
+    filename = f"Low Gravitas{suffix}-color-theme.json"
+    path = REPO / "low-gravitas-theme-vscode" / "themes" / filename
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content)
     print(f"  wrote {path.relative_to(REPO)}")
@@ -1754,11 +1754,11 @@ def generate_intellij_theme(palette, variant):
     suffix = "light" if is_light else ""
 
     theme = OrderedDict()
-    theme["name"] = f"Low Gravitas Zen{' Light' if is_light else ''}"
+    theme["name"] = f"Low Gravitas{' Light' if is_light else ''}"
     theme["author"] = "Low Gravitas"
     theme["dark"] = not is_light
     theme["parentTheme"] = "IntelliJ Light" if is_light else "Islands Dark"
-    theme["editorScheme"] = f"/low_gravitas_zen{'_light' if is_light else ''}.xml"
+    theme["editorScheme"] = f"/low_gravitas{'_light' if is_light else ''}.xml"
 
     # Resolve colors
     colors = OrderedDict()
@@ -1778,7 +1778,7 @@ def generate_intellij_theme(palette, variant):
 
     content = json.dumps(theme, indent=2, ensure_ascii=False) + "\n"
 
-    filename = f"lowgravitaszen{suffix}.theme.json"
+    filename = f"lowgravitas{suffix}.theme.json"
     path = REPO / "intellij" / "resources" / filename
     path.write_text(content)
     print(f"  wrote {path.relative_to(REPO)}")
@@ -1795,7 +1795,7 @@ def generate_intellij_scheme(palette, variant):
     is_light = variant == "light"
     suffix = "_light" if is_light else ""
     parent = "Default" if is_light else "Darcula"
-    name = f"Low Gravitas Zen{' Light' if is_light else ''}"
+    name = f"Low Gravitas{' Light' if is_light else ''}"
 
     lines = [
         f'<scheme name="{name}" version="1" parent_scheme="{parent}">',
@@ -1840,7 +1840,7 @@ def generate_intellij_scheme(palette, variant):
 
     content = "\n".join(lines) + "\n"
 
-    filename = f"low_gravitas_zen{suffix}.xml"
+    filename = f"low_gravitas{suffix}.xml"
     path = REPO / "intellij" / "resources" / filename
     path.write_text(content)
     print(f"  wrote {path.relative_to(REPO)}")
@@ -1855,7 +1855,7 @@ def bootstrap_intellij_xml():
     """Read existing IntelliJ XML and output INTELLIJ_SCHEME_ATTRS as Python code."""
     import xml.etree.ElementTree as ET
 
-    xml_path = REPO / "intellij" / "resources" / "low_gravitas_zen.xml"
+    xml_path = REPO / "intellij" / "resources" / "low_gravitas.xml"
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
@@ -1931,9 +1931,9 @@ def check_mode():
         # JSON files: compare parsed
         json_checks = [
             ("VS Code dark", "vscode", "dark",
-             "low-gravitas-zen-vscode/themes/Low Gravitas Zen-color-theme.json"),
+             "low-gravitas-theme-vscode/themes/Low Gravitas-color-theme.json"),
             ("IntelliJ theme", "intellij-theme", "dark",
-             "intellij/resources/lowgravitaszen.theme.json"),
+             "intellij/resources/lowgravitas.theme.json"),
         ]
 
         for label, editor, variant, relpath in json_checks:
@@ -1961,7 +1961,7 @@ def check_mode():
         # XML: compare via parsed structure
         import xml.etree.ElementTree as ET
         generate_intellij_scheme(pal, "dark")
-        xml_path = "intellij/resources/low_gravitas_zen.xml"
+        xml_path = "intellij/resources/low_gravitas.xml"
         gen_tree = ET.parse(REPO / xml_path)
         gen_root = gen_tree.getroot()
 
@@ -1993,8 +1993,8 @@ def check_mode():
 
         # Text files: compare ignoring GENERATED header
         text_checks = [
-            ("Ghostty dark", "ghostty", "dark", "ghostty/LowGravitasZen"),
-            ("Warp dark", "warp", "dark", "warp/low_gravitas_zen_theme.yaml"),
+            ("Ghostty dark", "ghostty", "dark", "ghostty/LowGravitas"),
+            ("Warp dark", "warp", "dark", "warp/low_gravitas_theme.yaml"),
         ]
 
         for label, editor, variant, relpath in text_checks:
@@ -2088,7 +2088,7 @@ def seed_light():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def generate_css():
-    """Generate dist/low-gravitas-zen.css — standalone color tokens for web."""
+    """Generate dist/low-gravitas.css — standalone color tokens for web."""
     dark_pal = load_palette("dark")
     light_pal = load_palette("light")
     version = dark_pal["_meta"]["version"]
@@ -2146,12 +2146,12 @@ def generate_css():
     extra_light_media = [indent(l) for l in extra_light]
 
     css = f"""\
-/* Low Gravitas Zen v{version} — CSS Color Tokens
+/* Low Gravitas v{version} — CSS Color Tokens
    GENERATED from palette.toml — do not edit by hand.
-   https://github.com/low-gravitas/low-gravitas-zen-theme
+   https://github.com/low-gravitas/low-gravitas-theme
 
    Usage:
-     <link rel="stylesheet" href="low-gravitas-zen.css">
+     <link rel="stylesheet" href="low-gravitas.css">
 
    Dark mode (default):  just works — :root provides dark palette.
    Light mode:           add data-theme="light" to <html>, or let
@@ -2213,7 +2213,7 @@ def generate_css():
 
     dist_dir = REPO / "dist"
     dist_dir.mkdir(exist_ok=True)
-    path = dist_dir / "low-gravitas-zen.css"
+    path = dist_dir / "low-gravitas.css"
     path.write_text(css)
     print(f"  wrote {path.relative_to(REPO)}")
     return path
@@ -2435,7 +2435,7 @@ def generate_code_samples():
     dist_dir.mkdir(exist_ok=True)
 
     code_samples = (
-        f'<!-- Low Gravitas Zen v{version} — pre-colorized code samples\n'
+        f'<!-- Low Gravitas v{version} — pre-colorized code samples\n'
         f'     GENERATED from palette.toml — do not edit by hand. -->\n'
         f'<div class="lgz-code-samples" data-version="{version}">\n'
         f'  <pre class="lgz-code-sample lgz-code-sample--python"><code>{python_html}</code></pre>\n'
@@ -2464,7 +2464,7 @@ EDITORS = {
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate Low Gravitas Zen themes")
+    parser = argparse.ArgumentParser(description="Generate Low Gravitas themes")
     parser.add_argument("--variant", choices=["dark", "light", "all"], default="all",
                         help="Which variant to generate (default: all)")
     parser.add_argument("--editor", choices=list(EDITORS.keys()) + ["all", "intellij"],

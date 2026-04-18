@@ -22,10 +22,10 @@ jobs:
       - name: Build IntelliJ plugin JAR
         run: |
           cd intellij/resources
-          jar cf ../../low-gravitas-zen.jar META-INF/ lowgravitaszen.theme.json low_gravitas_zen.xml lowgravitaszenlight.theme.json low_gravitas_zen_light.xml
+          jar cf ../../low-gravitas.jar META-INF/ lowgravitas.theme.json low_gravitas.xml lowgravitaslight.theme.json low_gravitas_light.xml
           cd ../..
-          echo "Built low-gravitas-zen.jar"
-          jar tf low-gravitas-zen.jar
+          echo "Built low-gravitas.jar"
+          jar tf low-gravitas.jar
 
       - name: Generate release artifacts
         run: python3 generate.py --artifacts
@@ -34,14 +34,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            low-gravitas-zen.jar
-            dist/low-gravitas-zen.css
+            low-gravitas.jar
+            dist/low-gravitas.css
             dist/palette.json
             dist/code-samples.html
-            ghostty/LowGravitasZen
-            ghostty/LowGravitasZenLight
-            warp/low_gravitas_zen_theme.yaml
-            warp/low_gravitas_zen_light_theme.yaml
-            iTerm2/LowGravitasZen.itermcolors
-            iTerm2/LowGravitasZenLight.itermcolors
+            ghostty/LowGravitas
+            ghostty/LowGravitasLight
+            warp/low_gravitas_theme.yaml
+            warp/low_gravitas_light_theme.yaml
+            iTerm2/LowGravitas.itermcolors
+            iTerm2/LowGravitasLight.itermcolors
           generate_release_notes: true

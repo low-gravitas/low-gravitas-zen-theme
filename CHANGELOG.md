@@ -1,9 +1,16 @@
 # Changelog
 
-All notable changes to the Low Gravitas Zen theme collection will be documented in this file.
+All notable changes to the Low Gravitas theme collection will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.0.0] - 2026-04-18
+
+### Changed
+
+- Renamed from Low Gravitas Zen to Low Gravitas. The palette originally derived from the Zen theme (Zenburn-based), but has diverged significantly enough that the name was misleading.
+- All theme files, artifacts, and identifiers updated to drop the "Zen" name.
 
 ## [1.3.1] - 2026-03-16
 
